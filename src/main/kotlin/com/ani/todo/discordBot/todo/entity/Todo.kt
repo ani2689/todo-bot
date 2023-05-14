@@ -1,31 +1,34 @@
 package com.ani.todo.discordBot.todo.entity
 
 import com.ani.todo.discordBot.todo.entity.status.TodoStatus
+import lombok.Builder
+import lombok.Getter
+import lombok.NoArgsConstructor
+import lombok.Setter
 import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*
 
 @Entity
 @DynamicUpdate
-class Todo (
+@Getter
+@Setter
+@Table(name = "todo")
+data class Todo (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TODO_ID")
-    var id: Long,
+    @Column(name = "todo_id")
+    var id: Long = 0,
 
-    @Column(name = "USER_ID")
-    val userId: String,
+    @Column(name = "user_id")
+    var userId: String,
 
-    @Column(columnDefinition = "TEXT")
     var title: String,
 
     @Enumerated(value = EnumType.STRING)
     var status: TodoStatus
 ){
-    fun completeTodo(){
+    fun completeTodo(): Todo{
         status = TodoStatus.DONE
-    }
-
-    fun overdueTodo(){
-        status = TodoStatus.OVER
+        return this
     }
 }
