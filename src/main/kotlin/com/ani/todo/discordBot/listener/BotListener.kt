@@ -34,16 +34,16 @@ class BotListener (
         val textChannel = event.channel
         val discordMessage = event.message
 
-        val todoTitle = discordMessage.contentRaw.substring(1)
+        val keyword = discordMessage.contentRaw.substring(1)
 
-        if(todoTitle.isEmpty()||todoTitle.length>255){
+        if(keyword.isEmpty()||keyword.length>255){
             buildMessage(textChannel,ErrorCode.INVALID_COMMAND)
             return
         }
 
         when(discordMessage.contentRaw[0]){
             prefix -> {
-                when(todoTitle){
+                when(keyword.substring(0,3)){
                     "도움말" -> buildMessage(textChannel, "명령어 목록") { messageUtil.info() }
                     "할 일" -> buildMessage(textChannel, user.name+"님의 할 일 목록") { messageUtil.todoList(user) }
                         .addActionRow (listOf(Button.success("refresh:${user.id}", "새로고침"),Button.secondary("hasten:${user.id}", "재촉!")))
@@ -51,7 +51,7 @@ class BotListener (
                 }.queue()
             }
             '+' -> {
-                val todo =  todoRepository.findByUserIdAndTitle(user.id,todoTitle)
+                val todo =  todoRepository.findByUserIdAndTitle(user.id,keyword)
 
                 if(todo == null)
                     discordMessage.addReaction(Emoji.fromUnicode("➕")).queue()
@@ -115,7 +115,7 @@ class BotListener (
         when(keyword){
             "refresh" -> event.editMessageEmbeds(buildMessage(event.channel,"새로고침") {messageUtil.todoList(user!!)}.embeds).queue()
             "hasten" -> {
-                event.channel.sendMessage("${event.user.name}님이 부릅니다. 🎶${user?.asMention}, 이제 할 때가 됐잖아🎶").queue()
+                event.channel.sendMessage("${user?.asMention}? 다 울었으면 이제 할 일을 해요 🙋‍♂️").queue()
                 event.deferEdit().queue()
             }
             else -> buildMessage(event.channel,ErrorCode.INVALID_COMMAND).queue()
