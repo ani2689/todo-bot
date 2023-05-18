@@ -6,11 +6,13 @@ import com.ani.todo.discordBot.todo.exception.ErrorCode
 import com.ani.todo.discordBot.todo.repository.TodoRepository
 import com.ani.todo.discordBot.util.MessageUtil
 import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion
 import net.dv8tion.jda.api.entities.emoji.Emoji
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.interactions.components.buttons.Button
 import org.springframework.stereotype.Component
 
 @Component
@@ -32,22 +34,10 @@ class BotListener (
         val textChannel = event.channel
         val discordMessage = event.message
 
-
-        fun buildMessage(message: String, util: () -> (EmbedBuilder)) =
-            textChannel.sendMessage(message).setEmbeds(util().build())
-
-        fun buildMessage(message: String, user: User, util: (User) -> (EmbedBuilder)) =
-            textChannel.sendMessage(message).setEmbeds(util(user).build())
-
-        fun buildMessage(message: String, title: String, user: User, util: (String, User) -> (EmbedBuilder)) =
-            textChannel.sendMessage(message).setEmbeds(util(title, user).build())
-
-        fun buildMessage(errorCode: ErrorCode) = textChannel.sendMessage(errorCode.title)
-
         val todoTitle = discordMessage.contentRaw.substring(1)
 
         if(todoTitle.isEmpty()||todoTitle.length>255){
-            buildMessage(ErrorCode.INVALID_COMMAND)
+            buildMessage(textChannel,ErrorCode.INVALID_COMMAND)
             return
         }
 
@@ -60,9 +50,11 @@ class BotListener (
                 }.queue()
             }
             '+' -> {
-                if(todoRepository.findByUserIdAndTitle(user.id,todoTitle) == null)
+                val todo =  todoRepository.findByUserIdAndTitle(user.id,todoTitle)
+
+                if(todo == null)
                     discordMessage.addReaction(Emoji.fromUnicode("➕")).queue()
-                else{
+                if(todo != null && todo.status!= TodoStatus.DONE){
                     discordMessage.addReaction(Emoji.fromUnicode("✔")).queue()
                 }
                 discordMessage.addReaction(Emoji.fromUnicode("❌")).queue()
@@ -86,13 +78,14 @@ class BotListener (
                     }
                 if(isBot&&isUser){
                     val message = event.retrieveMessage().complete()
-                    message.addReaction(Emoji.fromUnicode("✅")).queue()
 
                     val emoji = it.emoji.asReactionCode
                     val channel = event.channel
                     val user = event.user
 
                     val todo = message.contentDisplay.substring(1)
+
+                    event.retrieveMessage().complete().addReaction(Emoji.fromUnicode("✅")).queue()
 
                     when(emoji){
                         "❌" -> {
@@ -106,8 +99,7 @@ class BotListener (
                         }
                         else -> channel.sendMessage(ErrorCode.INVALID_COMMAND.title).queue()
                     }
-
-                    message.delete().queue()
+                    event.retrieveMessage().complete().delete().queue()
                     return
                 }
             }
