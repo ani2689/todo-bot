@@ -30,7 +30,9 @@ class MessageUtilImpl(
         val doneListString = if (doneList.isNotEmpty()) "~~${doneList.joinToString("\n") { it.title }}~~" else ""
 
         return EmbedBuilder()
-            .addField("할 일 목록", when(doneList.isEmpty()&&stayList.isEmpty()) {
+            .setAuthor(user.name,null,user.avatarUrl)
+            .setDescription("해야 할 일: ${stayList.size}개")
+            .addField("목록", when(doneList.isEmpty()&&stayList.isEmpty()) {
                 true ->     "작성된 할 일이 없어요."
                 false ->    stayListString + doneListString
             },true)
