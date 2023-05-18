@@ -1,8 +1,6 @@
 package com.ani.todo.discordBot.config
 
 import com.ani.todo.discordBot.listener.BotListener
-import com.ani.todo.discordBot.util.MessageUtil
-import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent

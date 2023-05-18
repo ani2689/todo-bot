@@ -1,9 +1,7 @@
 package com.ani.todo.discordBot.todo.entity
 
 import com.ani.todo.discordBot.todo.entity.status.TodoStatus
-import lombok.Builder
 import lombok.Getter
-import lombok.NoArgsConstructor
 import lombok.Setter
 import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*

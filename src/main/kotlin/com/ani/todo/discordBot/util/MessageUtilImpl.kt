@@ -5,7 +5,6 @@ import com.ani.todo.discordBot.todo.entity.status.TodoStatus
 import com.ani.todo.discordBot.todo.repository.TodoRepository
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.User
-import net.dv8tion.jda.api.interactions.components.ActionRow
 import org.springframework.stereotype.Component
 
 @Component
