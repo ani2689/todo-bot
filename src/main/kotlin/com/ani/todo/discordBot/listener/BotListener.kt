@@ -44,9 +44,10 @@ class BotListener (
         when(discordMessage.contentRaw[0]){
             prefix -> {
                 when(todoTitle){
-                    "도움말" -> buildMessage("명령어 목록") { messageUtil.info() }
-                    "할 일" -> buildMessage(user.name+"님의 할 일 목록") { messageUtil.todoList(user) }
-                    else -> buildMessage(ErrorCode.INVALID_COMMAND)
+                    "도움말" -> buildMessage(textChannel, "명령어 목록") { messageUtil.info() }
+                    "할 일" -> buildMessage(textChannel, user.name+"님의 할 일 목록") { messageUtil.todoList(user) }
+                        .addActionRow (listOf(Button.success("refresh:${user.id}", "새로고침"),Button.secondary("hasten:${user.id}", "재촉!")))
+                    else -> buildMessage(textChannel, ErrorCode.INVALID_COMMAND)
                 }.queue()
             }
             '+' -> {
@@ -104,4 +105,26 @@ class BotListener (
                 }
             }
     }
+
+    override fun onButtonInteraction(event: ButtonInteractionEvent) {
+        val keyword  = event.button.id!!.split(":")[0]
+        val userId = event.button.id!!.split(":")[1]
+        val user = event.jda.getUserById(userId)
+
+
+        when(keyword){
+            "refresh" -> event.editMessageEmbeds(buildMessage(event.channel,"새로고침") {messageUtil.todoList(user!!)}.embeds).queue()
+            "hasten" -> {
+                event.channel.sendMessage("${event.user.name}님이 부릅니다. 🎶${user?.asMention}, 이제 할 때가 됐잖아🎶").queue()
+                event.deferEdit().queue()
+            }
+            else -> buildMessage(event.channel,ErrorCode.INVALID_COMMAND).queue()
+        }
+
+    }
+
+
+    fun buildMessage(textChannel: MessageChannelUnion, message: String, util: () -> (EmbedBuilder)) =
+        textChannel.sendMessage(message).setEmbeds(util().build())
+    fun buildMessage(textChannel: MessageChannelUnion, errorCode: ErrorCode) = textChannel.sendMessage(errorCode.title)
 }
