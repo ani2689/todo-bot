@@ -6,6 +6,7 @@ import com.ani.todo.discordBot.todo.repository.TodoRepository
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.User
 import org.springframework.stereotype.Component
+import java.awt.Color
 
 @Component
 class MessageUtilImpl(
@@ -35,5 +36,6 @@ class MessageUtilImpl(
                 true ->     "작성된 할 일이 없어요."
                 false ->    stayListString + doneListString
             },true)
+            .setColor(Color.white)
     }
 }
