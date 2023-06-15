@@ -91,7 +91,6 @@ class BotListener (
 
                     when(emoji){
                         "❌" -> {
-                            channel.sendMessage("명령어가 취소됐어요!").complete().delete().queue()
                         }
                         "➕" -> {
                             todoRepository.save(Todo(0, user!!.id, todo, TodoStatus.STAY))
@@ -116,7 +115,11 @@ class BotListener (
         when(keyword){
             "refresh" -> event.editMessageEmbeds(buildMessage(event.channel,"새로고침") {messageUtil.todoList(user!!)}.embeds).queue()
             "hasten" -> {
-                event.channel.sendMessage("${user?.asMention}? 다 울었으면 이제 할 일을 해요 🙋‍♂️").queue()
+                if(todoRepository.findByUserIdAndStatus(userId, TodoStatus.STAY).isEmpty()){
+                    event.channel.sendMessage("${user?.asMention}, 할 거 없어요? 🤷‍♀️").queue()
+                }else{
+                    event.channel.sendMessage("${user?.asMention}? 다 울었으면 이제 할 일을 해요 🙋‍♀️").queue()
+                }
                 event.deferEdit().queue()
             }
             else -> buildMessage(event.channel,ErrorCode.INVALID_COMMAND).queue()
