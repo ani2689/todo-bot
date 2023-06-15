@@ -34,7 +34,7 @@ class MessageUtilImpl(
             .setDescription("해야 할 일: ${stayList.size}개")
             .addField("목록", when(doneList.isEmpty()&&stayList.isEmpty()) {
                 true ->     "작성된 할 일이 없어요."
-                false ->    stayListString + doneListString
+                false ->    stayListString + "\n" + doneListString
             },true)
             .setColor(Color.white)
     }
