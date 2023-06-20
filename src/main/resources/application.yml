@@ -1,8 +1,11 @@
 discord:
-  bot:
-    token: ${DISCORD_BOT_TOKEN}
+ bot:
+   token: ${DISCORD_BOT_TOKEN}
 spring:
-  datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+ datasource:
+   url: ${SPRING_DATASOURCE_URL}
+   username: ${SPRING_DATASOURCE_}
+   password: ${SPRING_DATASOURCE_URL}
+ jpa:
+    hibernate:
+      ddl-auto: validate
