@@ -38,6 +38,13 @@ class MessageUtilImpl(
         val doneListString = if (doneList.isNotEmpty()) "~~${doneList.joinToString("\n") { it.title }}~~" else ""
 
         val todoRate = stayList.size.toDouble()/(doneList.size+stayList.size)*100
+        val color =  when{
+            todoRate >= 70 -> Color.RED
+            todoRate >= 50 -> Color.ORANGE
+            todoRate >= 30 -> Color.YELLOW
+            todoRate >= 0 -> Color.GREEN
+            else -> Color.WHITE
+        }
 
         return EmbedBuilder()
             .setAuthor(user.name,null,user.avatarUrl)
@@ -46,19 +53,7 @@ class MessageUtilImpl(
                 true ->     "작성된 할 일이 없어요."
                 false ->    stayListString + "\n" + doneListString
             },true)
-            .setColor(
-                if (todoRate >= 70) {
-                    Color.RED
-                } else if (todoRate >= 50) {
-                    Color.ORANGE
-                } else if (todoRate >= 30) {
-                    Color.YELLOW
-                } else if (todoRate >= 0) {
-                    Color.GREEN
-                } else {
-                    Color.WHITE
-                }
-            )
+            .setColor(color)
             .setTimestamp(Instant.now())
     }
 }
