@@ -44,22 +44,21 @@ class BotListener (
 
         when(discordMessage.contentRaw[0]){
             prefix -> {
-                when(keyword.substring(0,3)){
+                when(keyword){
                     "도움말" -> buildMessage(textChannel, "명령어 목록") { messageUtil.info() }
                     "할 일" -> buildMessage(textChannel, user.name+"님의 할 일 목록") { messageUtil.todoList(user) }
                         .addActionRow (listOf(Button.success("refresh:${user.id}", "새로고침"),Button.secondary("hasten:${user.id}", "재촉!")))
-                    else -> buildMessage(textChannel, ErrorCode.INVALID_COMMAND)
-                }.queue()
-            }
-            '+' -> {
-                val todo =  todoRepository.findByUserIdAndTitle(user.id,keyword)
+                    else -> {
+                        val todo =  todoRepository.findByUserIdAndTitle(user.id,keyword)
 
-                if(todo == null)
-                    discordMessage.addReaction(Emoji.fromUnicode("➕")).queue()
-                if(todo != null && todo.status!= TodoStatus.DONE){
-                    discordMessage.addReaction(Emoji.fromUnicode("✔")).queue()
-                }
-                discordMessage.addReaction(Emoji.fromUnicode("❌")).queue()
+                        if(todo == null)
+                            discordMessage.addReaction(Emoji.fromUnicode("➕")).queue()
+                        if(todo != null && todo.status!= TodoStatus.DONE){
+                            discordMessage.addReaction(Emoji.fromUnicode("✔")).queue()
+                        }
+                        discordMessage.addReaction(Emoji.fromUnicode("❌"))
+                    }
+                }.queue()
             }
         }
     }
