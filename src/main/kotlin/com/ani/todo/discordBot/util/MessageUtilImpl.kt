@@ -37,7 +37,7 @@ class MessageUtilImpl(
         val stayListString = if (stayList.isNotEmpty()) "**${stayList.joinToString("\n") { it.title }}**" else ""
         val doneListString = if (doneList.isNotEmpty()) "~~${doneList.joinToString("\n") { it.title }}~~" else ""
 
-        val todoRate = stayList.size/(doneList.size+stayList.size)*100
+        val todoRate = stayList.size.toDouble()/(doneList.size+stayList.size)*100
 
         return EmbedBuilder()
             .setAuthor(user.name,null,user.avatarUrl)
