@@ -53,10 +53,17 @@ class BotListener (
                     "할 일" -> buildMessage(textChannel, user.name+"님의 할 일 목록") { messageUtil.todoList(user) }
                         .addActionRow (listOf(Button.success("refresh:${user.id}", "새로고침"),Button.secondary("hasten:${user.id}", "재촉!")))
                         .queue()
-                    "비우기" ->
+                    "비우기" -> {
+                        discordMessage.delete().queue()
                         textChannel.sendMessage("정말 모든 TODO를 비울까요?")
-                            .addActionRow (listOf(Button.success("yes:${user.id}", "네!"),Button.danger("no:${user.id}", "아니요!")))
+                            .addActionRow(
+                                listOf(
+                                    Button.success("yes:${user.id}", "네!"),
+                                    Button.danger("no:${user.id}", "아니요!")
+                                )
+                            )
                             .queue()
+                    }
                     else -> {
                         val todo =  todoRepository.findByUserIdAndTitle(user.id, keyword)
 
