@@ -24,9 +24,9 @@ class BotListener (
 
     val prefix = '!'
 
-    val yes = "✔"
-    val no = "❌"
-    val plus = "➕"
+    val yes = "🆗"
+    val no = "🆖"
+    val plus = "🆙"
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
         if(event.author.isBot)

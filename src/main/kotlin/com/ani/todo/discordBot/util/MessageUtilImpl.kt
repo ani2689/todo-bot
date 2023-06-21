@@ -18,10 +18,10 @@ class MessageUtilImpl(
 
     val prefix = '!'
 
-    val yes = "✔"
-    val no = "❌"
-    val plus = "➕"
-    
+    val yes = "🆗"
+    val no = "🆖"
+    val plus = "🆙"
+
     override fun info(): EmbedBuilder = EmbedBuilder()
         .addField("${prefix}할 일", "유저의 할 일 목록을 가져옵니다.", false)
         .addField("$prefix{추가 및 완료할 TODO}", "할 일을 추가 및 완료합니다. $plus, $yes 또는 $no 를눌러 조작하세요.", false)
