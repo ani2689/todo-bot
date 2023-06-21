@@ -47,12 +47,16 @@ class MessageUtilImpl(
                 false ->    stayListString + "\n" + doneListString
             },true)
             .setColor(
-                when{
-                    todoRate >= 70 -> Color.red
-                    todoRate >= 50 -> Color.orange
-                    todoRate >= 30 -> Color.yellow
-                    todoRate >= 0 -> Color.green
-                    else -> Color.white
+                if (todoRate >= 70) {
+                    Color.RED
+                } else if (todoRate >= 50) {
+                    Color.ORANGE
+                } else if (todoRate >= 30) {
+                    Color.YELLOW
+                } else if (todoRate >= 0) {
+                    Color.GREEN
+                } else {
+                    Color.WHITE
                 }
             )
             .setTimestamp(Instant.now())
