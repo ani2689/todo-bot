@@ -7,6 +7,9 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.User
 import org.springframework.stereotype.Component
 import java.awt.Color
+import java.sql.Timestamp
+import java.time.Instant
+import java.util.TimeZone
 
 @Component
 class MessageUtilImpl(
@@ -37,5 +40,6 @@ class MessageUtilImpl(
                 false ->    stayListString + "\n" + doneListString
             },true)
             .setColor(Color.white)
+            .setTimestamp(Instant.now())
     }
 }
