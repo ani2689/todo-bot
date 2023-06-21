@@ -24,6 +24,10 @@ class BotListener (
 
     val prefix = '!'
 
+    val yes = "✔"
+    val no = "❌"
+    val plus = "➕"
+
     override fun onMessageReceived(event: MessageReceivedEvent) {
         if(event.author.isBot)
             return
@@ -52,11 +56,11 @@ class BotListener (
                         val todo =  todoRepository.findByUserIdAndTitle(user.id,keyword)
 
                         if(todo == null)
-                            discordMessage.addReaction(Emoji.fromUnicode("➕")).queue()
+                            discordMessage.addReaction(Emoji.fromUnicode(plus)).queue()
                         if(todo != null && todo.status!= TodoStatus.DONE){
-                            discordMessage.addReaction(Emoji.fromUnicode("✔")).queue()
+                            discordMessage.addReaction(Emoji.fromUnicode(yes)).queue()
                         }
-                        discordMessage.addReaction(Emoji.fromUnicode("❌"))
+                        discordMessage.addReaction(Emoji.fromUnicode(no))
                     }
                 }.queue()
             }

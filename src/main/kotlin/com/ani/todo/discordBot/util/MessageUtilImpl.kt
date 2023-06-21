@@ -15,9 +15,16 @@ import java.util.TimeZone
 class MessageUtilImpl(
     private val todoRepository: TodoRepository
 ): MessageUtil {
+
+    val prefix = '!'
+
+    val yes = "✔"
+    val no = "❌"
+    val plus = "➕"
+    
     override fun info(): EmbedBuilder = EmbedBuilder()
-        .addField("!할 일", "유저의 할 일 목록을 가져옵니다.", false)
-        .addField("!{추가 및 완료할 TODO}", "할 일을 추가 및 완료합니다. ➕, ✔ 또는 ❌를 눌러 조작하세요.", false)
+        .addField("${prefix}할 일", "유저의 할 일 목록을 가져옵니다.", false)
+        .addField("$prefix{추가 및 완료할 TODO}", "할 일을 추가 및 완료합니다. $plus, $yes 또는 $no 를눌러 조작하세요.", false)
 
     override fun todoList(user: User): EmbedBuilder {
         val doneList = ArrayList<Todo>()
