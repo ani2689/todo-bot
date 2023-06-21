@@ -37,6 +37,8 @@ class MessageUtilImpl(
         val stayListString = if (stayList.isNotEmpty()) "**${stayList.joinToString("\n") { it.title }}**" else ""
         val doneListString = if (doneList.isNotEmpty()) "~~${doneList.joinToString("\n") { it.title }}~~" else ""
 
+        val todoRate = stayList.size/(doneList.size+stayList.size)*100
+
         return EmbedBuilder()
             .setAuthor(user.name,null,user.avatarUrl)
             .setDescription("해야 할 일: ${stayList.size}개")
@@ -46,10 +48,10 @@ class MessageUtilImpl(
             },true)
             .setColor(
                 when{
-                    stayList.size/todoRepository.findByUserId(user.id).size*100 >= 70 -> Color.red
-                    stayList.size/todoRepository.findByUserId(user.id).size*100 >= 50 -> Color.orange
-                    stayList.size/todoRepository.findByUserId(user.id).size*100 >= 30 -> Color.yellow
-                    stayList.size/todoRepository.findByUserId(user.id).size*100 >= 0 -> Color.green
+                    todoRate >= 70 -> Color.red
+                    todoRate >= 50 -> Color.orange
+                    todoRate >= 30 -> Color.yellow
+                    todoRate >= 0 -> Color.green
                     else -> Color.white
                 }
             )
