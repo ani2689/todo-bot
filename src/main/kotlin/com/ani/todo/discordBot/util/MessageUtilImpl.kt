@@ -22,6 +22,7 @@ class MessageUtilImpl(
 
     override fun info(): EmbedBuilder = EmbedBuilder()
         .addField("${prefix}할 일", "유저의 할 일 목록을 가져옵니다.", false)
+        .addField("${prefix}비우기", "유저의 할 일을 모두 지웁니다.", false)
         .addField("$prefix{추가 및 완료할 TODO}", "할 일을 추가 및 완료합니다. $plus, $yes 또는 $no 를눌러 조작하세요.", false)
 
     override fun todoList(user: User): EmbedBuilder {

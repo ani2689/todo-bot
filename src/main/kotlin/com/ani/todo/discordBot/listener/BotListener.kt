@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.interactions.components.buttons.Button
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 @Component
@@ -27,6 +26,7 @@ class BotListener (
     val yes = "🆗"
     val no = "🆖"
     val plus = "🆙"
+    val yeah = "🆒"
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
         if(event.author.isBot)
@@ -49,20 +49,25 @@ class BotListener (
         when(discordMessage.contentRaw[0]){
             prefix -> {
                 when(keyword){
-                    "도움말" -> buildMessage(textChannel, "명령어 목록") { messageUtil.info() }
+                    "도움말" -> buildMessage(textChannel, "명령어 목록") { messageUtil.info() }.queue()
                     "할 일" -> buildMessage(textChannel, user.name+"님의 할 일 목록") { messageUtil.todoList(user) }
                         .addActionRow (listOf(Button.success("refresh:${user.id}", "새로고침"),Button.secondary("hasten:${user.id}", "재촉!")))
+                        .queue()
+                    "비우기" ->
+                        textChannel.sendMessage("정말 모든 TODO를 비울까요?")
+                            .addActionRow (listOf(Button.success("yes:${user.id}", "네!"),Button.danger("no:${user.id}", "아니요!")))
+                            .queue()
                     else -> {
-                        val todo =  todoRepository.findByUserIdAndTitle(user.id,keyword)
+                        val todo =  todoRepository.findByUserIdAndTitle(user.id, keyword)
 
                         if(todo == null)
                             discordMessage.addReaction(Emoji.fromUnicode(plus)).queue()
                         if(todo != null && todo.status!= TodoStatus.DONE){
                             discordMessage.addReaction(Emoji.fromUnicode(yes)).queue()
                         }
-                        discordMessage.addReaction(Emoji.fromUnicode(no))
+                        discordMessage.addReaction(Emoji.fromUnicode(no)).queue()
                     }
-                }.queue()
+                }
             }
         }
     }
@@ -86,7 +91,7 @@ class BotListener (
 
                     val emoji = it.emoji.asReactionCode
                     val channel = event.channel
-                    val user = event.user
+                    val user = event.user!!
 
                     val todo = message.contentDisplay.substring(1)
 
@@ -96,10 +101,10 @@ class BotListener (
                         no -> {
                         }
                         plus -> {
-                            todoRepository.save(Todo(0, user!!.id, todo, TodoStatus.STAY))
+                            todoRepository.save(Todo(0, user.id, todo, TodoStatus.STAY))
                         }
                         yes -> {
-                            todoRepository.save(todoRepository.findByUserIdAndTitle(user!!.id, todo)!!.completeTodo())
+                            todoRepository.save(todoRepository.findByUserIdAndTitle(user.id, todo)!!.completeTodo())
                         }
                         else -> channel.sendMessage(ErrorCode.INVALID_COMMAND.title).queue()
                     }
@@ -124,6 +129,19 @@ class BotListener (
                     event.channel.sendMessage("${user?.asMention}? 다 울었으면 이제 할 일을 해요 🙋‍♀️").queue()
                 }
                 event.deferEdit().queue()
+            }
+            "yes" -> {
+                if(user == event.user){
+                    event.message.addReaction(Emoji.fromUnicode(yeah)).queue()
+                    todoRepository.findByUserId(userId)
+                        .map { todoRepository.delete(it) }
+                    event.message.delete().queue()
+                }
+            }
+            "no" -> {
+                if(user == event.user){
+                    event.message.delete().queue()
+                }
             }
             else -> buildMessage(event.channel,ErrorCode.INVALID_COMMAND).queue()
         }
