@@ -7,9 +7,7 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.User
 import org.springframework.stereotype.Component
 import java.awt.Color
-import java.sql.Timestamp
 import java.time.Instant
-import java.util.TimeZone
 
 @Component
 class MessageUtilImpl(
@@ -46,7 +44,15 @@ class MessageUtilImpl(
                 true ->     "작성된 할 일이 없어요."
                 false ->    stayListString + "\n" + doneListString
             },true)
-            .setColor(Color.white)
+            .setColor(
+                when{
+                    stayList.size/todoRepository.findByUserId(user.id).size*100 >= 70 -> Color.red
+                    stayList.size/todoRepository.findByUserId(user.id).size*100 >= 50 -> Color.orange
+                    stayList.size/todoRepository.findByUserId(user.id).size*100 >= 30 -> Color.yellow
+                    stayList.size/todoRepository.findByUserId(user.id).size*100 >= 0 -> Color.green
+                    else -> Color.white
+                }
+            )
             .setTimestamp(Instant.now())
     }
 }
