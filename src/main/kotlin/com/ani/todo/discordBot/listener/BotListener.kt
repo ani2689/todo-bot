@@ -93,12 +93,12 @@ class BotListener (
                     event.retrieveMessage().complete().addReaction(Emoji.fromUnicode("✅")).queue()
 
                     when(emoji){
-                        "❌" -> {
+                        no -> {
                         }
-                        "➕" -> {
+                        plus -> {
                             todoRepository.save(Todo(0, user!!.id, todo, TodoStatus.STAY))
                         }
-                        "✔" -> {
+                        yes -> {
                             todoRepository.save(todoRepository.findByUserIdAndTitle(user!!.id, todo)!!.completeTodo())
                         }
                         else -> channel.sendMessage(ErrorCode.INVALID_COMMAND.title).queue()
