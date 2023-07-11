@@ -9,7 +9,7 @@ class Schedule (
     private val todoRepository: TodoRepository
 ){
     @Scheduled(cron = "0 0 0 1/1 * ? *")
-    fun execute(){
+    fun initTodo(){
         todoRepository.findAll()
             .map { todoRepository.delete(it) }
     }
