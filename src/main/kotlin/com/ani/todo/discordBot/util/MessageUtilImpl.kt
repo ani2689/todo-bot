@@ -17,9 +17,11 @@ class MessageUtilImpl(
 ): MessageUtil {
 
     override fun info(): EmbedBuilder = EmbedBuilder()
+        .setTitle("이제 할 일을 하자의 명령어 목록")
         .addField("/todo", "유저의 할 일 목록을 가져옵니다.", false)
         .addField("/add", "유저의 할 일을 모두 지웁니다.", false)
-        .addField("/remove", "할 일을 추가 및 완료합니다.", false)
+        .addField("/complete", "할 일을 추가 및 완료합니다.", false)
+        .addField("/daily", "데일리를 작성합니다.", false)
 
     override fun todoList(user: User): EmbedBuilder {
         val doneList = ArrayList<Todo>()
