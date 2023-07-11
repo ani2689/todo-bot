@@ -1,5 +1,6 @@
 package com.ani.todo.discordBot.listener
 
+import com.ani.todo.discordBot.todo.entity.Alarm
 import com.ani.todo.discordBot.todo.entity.Todo
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
@@ -12,13 +13,15 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button
 import org.springframework.stereotype.Component
 import com.ani.todo.discordBot.todo.entity.status.TodoStatus
 import com.ani.todo.discordBot.todo.exception.ErrorCode
+import com.ani.todo.discordBot.todo.repository.AlarmRepository
 import com.ani.todo.discordBot.todo.repository.TodoRepository
 import com.ani.todo.discordBot.util.MessageUtil
 
 @Component
 class BotListener (
     private val messageUtil: MessageUtil,
-    private val todoRepository: TodoRepository
+    private val todoRepository: TodoRepository,
+    private val alarmRepository: AlarmRepository
 ) : ListenerAdapter() {
 
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
@@ -79,6 +82,37 @@ class BotListener (
                         .build())
                     .queue()
 
+            }
+            "add_alarm" -> {
+                val title = event.getOption("title")!!.asString
+                val channel = event.getOption("channel")!!.asChannel
+                val content = when(event.getOption("content")){
+                    null -> null
+                    else -> event.getOption("content")!!.asString
+                }
+                val role = when(event.getOption("role")){
+                    null -> null
+                    else -> event.getOption("role")!!.asRole.id
+                }
+
+                if(!alarmRepository.findByTitleAndChannelId(title, channel.id).equals(null))
+                    event.reply("채널에 이미 같은 제목의 알람이 존재해요.")
+
+                alarmRepository.save(Alarm(0, channel.id, title,content,role))
+
+                event.reply("알람 설정이 완료되었어요.")
+
+            }
+            "remove_alarm" -> {
+                val title = event.getOption("title")!!.asString
+                val channel = event.getOption("channel")!!.asString
+
+                if(alarmRepository.findByTitleAndChannelId(title, channel).equals(null)){
+                    event.reply("그런 제목의 알람이 존재하지 않아요.")
+                }else{
+                    alarmRepository.delete(alarmRepository.findByTitleAndChannelId(title,channel))
+                    event.reply("알람을 지웠어요.")
+                }
             }
         }
     }
