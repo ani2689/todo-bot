@@ -43,6 +43,27 @@ class JdaConfig (
                 .setRequired(true))
             .queue()
         jda.upsertCommand("complete", "완료할 할 일을 선택합니다.").queue()
+        jda.upsertCommand("daily", "데일리를 작성합니다.")
+            .addOptions(
+                OptionData(OptionType.STRING, "yesterday_task", "어제 한 일을 작성해 주세요.").setRequired(true),
+                OptionData(OptionType.STRING, "today_task", "오늘 할 일을 작성해 주세요.").setRequired(true),
+                OptionData(OptionType.STRING, "hard_task", "어려웠던 점을 작성해 주세요.").setRequired(true),
+                OptionData(OptionType.STRING, "share", "링크를 남겨주세요.").setRequired(false),
+            ).queue()
+        jda.upsertCommand("add_alarm", "알람을 설정합니다.")
+            .addOptions(
+                OptionData(OptionType.STRING, "title", "알람의 제목을 설정합니다.").setRequired(true),
+                OptionData(OptionType.CHANNEL, "channel", "알람을 보낼 채널을 설정합니다.").setRequired(true),
+                OptionData(OptionType.ROLE, "role", "알람을 보낼 대상의 역할을 설정합니다.").setRequired(false),
+                OptionData(OptionType.STRING, "content", "알람의 내용을 설정합니다.").setRequired(false),
+
+            ).queue()
+        jda.upsertCommand("remove_alarm", "알람을 삭제합니다.")
+            .addOptions(
+                OptionData(OptionType.STRING, "title", "지울 알람의 제목을 설정합니다.").setRequired(true),
+                OptionData(OptionType.STRING, "channel", "지울 알람이 있는 채널을 설정합니다.").setRequired(true),
+            ).queue()
+
 
     }
 
