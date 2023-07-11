@@ -96,10 +96,10 @@ class BotListener (
                 }
 
                 if(alarmRepository.findByTitleAndChannelId(title, channel.id) != null) {
-                    event.reply("채널에 이미 같은 제목의 알람이 존재해요.")
+                    event.reply("채널에 이미 같은 제목의 알람이 존재해요.").queue()
                 }else {
                     alarmRepository.save(Alarm(0, channel.id, title, content, role))
-                    event.reply("알람 설정이 완료되었어요.")
+                    event.reply("알람 설정이 완료되었어요.").queue()
                 }
 
             }
@@ -108,10 +108,10 @@ class BotListener (
                 val channel = event.getOption("channel")!!.asString
 
                 if(alarmRepository.findByTitleAndChannelId(title, channel) == null){
-                    event.reply("그런 제목의 알람이 존재하지 않아요.")
+                    event.reply("그런 제목의 알람이 존재하지 않아요.").queue()
                 }else{
                     alarmRepository.delete(alarmRepository.findByTitleAndChannelId(title,channel)!!)
-                    event.reply("알람을 지웠어요.")
+                    event.reply("알람을 지웠어요.").queue()
                 }
             }
         }
