@@ -72,4 +72,13 @@ class MessageUtilImpl(
 
         return a.build()
     }
+
+    override fun dailyBox(yesterdayTask: String, todayTask: String, hardTask: String, url: String?) =
+            EmbedBuilder()
+                .setColor(Color.WHITE)
+                .addField("어제 한 일", yesterdayTask, false)
+                .addField("오늘 할 일", yesterdayTask, false)
+                .addField("어려웠던 점", yesterdayTask, false)
+                .setThumbnail(url)
+                .setTimestamp(Instant.now())
 }

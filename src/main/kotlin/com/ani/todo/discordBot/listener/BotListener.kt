@@ -64,6 +64,22 @@ class BotListener (
                         .queue()
                 }
             }
+            "daily" -> {
+                val yesterdayTask = event.getOption("yesterday_task")!!.asString
+                val todayTask = event.getOption("today_task")!!.asString
+                val hardTask = event.getOption("hard_task")!!.asString
+                val url = when(event.getOption("share")){
+                    null -> null
+                    else -> event.getOption("share")!!.asString
+                }
+
+                event.reply(event.user.asMention+"님의 데일리")
+                    .setEmbeds(messageUtil.dailyBox(yesterdayTask, todayTask, hardTask, url)
+                        .setAuthor(event.user.name, null, event.user.effectiveAvatarUrl)
+                        .build())
+                    .queue()
+
+            }
         }
     }
 
