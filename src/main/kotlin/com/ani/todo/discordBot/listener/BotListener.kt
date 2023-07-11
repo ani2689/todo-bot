@@ -39,7 +39,7 @@ class BotListener (
                     null -> event.user
                     else -> user.asUser
                 }
-                event.reply(user.name+"님의 할 일 목록")
+                event.reply("${user.asMention}님의 할 일 목록")
                     .setEmbeds( messageUtil.todoList(user).build())
                     .addActionRow(
                         listOf(
@@ -54,7 +54,7 @@ class BotListener (
 
                 todoRepository.save(todo)
 
-                event.reply("☑ :: ${todo.title}")
+                event.reply("✍ :: ${todo.title}")
                     .queue()
             }
             "complete" -> {
