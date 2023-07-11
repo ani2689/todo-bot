@@ -50,7 +50,7 @@ class JdaConfig (
                 OptionData(OptionType.STRING, "hard_task", "어려웠던 점을 작성해 주세요.").setRequired(true),
                 OptionData(OptionType.STRING, "share", "링크를 남겨주세요.").setRequired(false),
             ).queue()
-        jda.upsertCommand("add_alarm", "알람을 설정합니다.")
+        jda.upsertCommand("loud", "알람을 추가합니다.")
             .addOptions(
                 OptionData(OptionType.STRING, "title", "알람의 제목을 설정합니다.").setRequired(true),
                 OptionData(OptionType.CHANNEL, "channel", "알람을 보낼 채널을 설정합니다.").setRequired(true),
@@ -58,7 +58,7 @@ class JdaConfig (
                 OptionData(OptionType.STRING, "content", "알람의 내용을 설정합니다.").setRequired(false),
 
             ).queue()
-        jda.upsertCommand("remove_alarm", "알람을 삭제합니다.")
+        jda.upsertCommand("silence", "알람을 삭제합니다.")
             .addOptions(
                 OptionData(OptionType.STRING, "title", "지울 알람의 제목을 설정합니다.").setRequired(true),
                 OptionData(OptionType.STRING, "channel", "지울 알람이 있는 채널을 설정합니다.").setRequired(true),

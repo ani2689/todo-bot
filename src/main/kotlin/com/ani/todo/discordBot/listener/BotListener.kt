@@ -83,7 +83,7 @@ class BotListener (
                     .queue()
 
             }
-            "add_alarm" -> {
+            "loud" -> {
                 val title = event.getOption("title")!!.asString
                 val channel = event.getOption("channel")!!.asChannel
                 val content = when(event.getOption("content")){
@@ -103,7 +103,7 @@ class BotListener (
                 event.reply("알람 설정이 완료되었어요.")
 
             }
-            "remove_alarm" -> {
+            "silence" -> {
                 val title = event.getOption("title")!!.asString
                 val channel = event.getOption("channel")!!.asString
 
