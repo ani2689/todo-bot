@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.ani"
-version = "1.0.0"
+version = "1.1.0"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 configurations {

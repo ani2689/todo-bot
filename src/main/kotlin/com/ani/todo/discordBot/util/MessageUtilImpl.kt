@@ -1,29 +1,25 @@
 package com.ani.todo.discordBot.util
 
-import com.ani.todo.discordBot.todo.entity.Todo
 import com.ani.todo.discordBot.todo.entity.status.TodoStatus
 import com.ani.todo.discordBot.todo.repository.TodoRepository
-import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu
 import org.springframework.stereotype.Component
 import java.awt.Color
 import java.time.Instant
+import net.dv8tion.jda.api.EmbedBuilder
+import com.ani.todo.discordBot.todo.entity.Todo
+import java.util.*
 
 @Component
 class MessageUtilImpl(
     private val todoRepository: TodoRepository
 ): MessageUtil {
 
-    val prefix = '!'
-
-    val yes = "🆗"
-    val no = "🆖"
-    val plus = "🆙"
-
     override fun info(): EmbedBuilder = EmbedBuilder()
-        .addField("${prefix}할 일", "유저의 할 일 목록을 가져옵니다.", false)
-        .addField("${prefix}비우기", "유저의 할 일을 모두 지웁니다.", false)
-        .addField("$prefix{추가 및 완료할 TODO}", "할 일을 추가 및 완료합니다. $plus, $yes 또는 $no 를눌러 조작하세요.", false)
+        .addField("/todo", "유저의 할 일 목록을 가져옵니다.", false)
+        .addField("/add", "유저의 할 일을 모두 지웁니다.", false)
+        .addField("/remove", "할 일을 추가 및 완료합니다.", false)
 
     override fun todoList(user: User): EmbedBuilder {
         val doneList = ArrayList<Todo>()
@@ -56,5 +52,21 @@ class MessageUtilImpl(
             },true)
             .setColor(color)
             .setTimestamp(Instant.now())
+    }
+
+    override fun choiceTodo(user: User, type: String) : StringSelectMenu {
+
+        val a = StringSelectMenu.create("todo")
+            .setPlaceholder("완료할 todo를 선택하세요.")
+            .setRequiredRange(1, 1)
+
+        todoRepository.findByUserId(user.id)
+                    .forEach {
+                        if (it.status == TodoStatus.STAY)
+                            a.addOption(it.title, it.id.toString()+":"+type+":"+user.id)
+                    }
+
+
+        return a.build()
     }
 }
