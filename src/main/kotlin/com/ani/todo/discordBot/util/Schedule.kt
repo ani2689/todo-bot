@@ -18,7 +18,7 @@ class Schedule (
             .map { todoRepository.delete(it) }
     }
 
-    @Scheduled(cron = "0 30 8 * * *")
+    @Scheduled(cron = "0 30 8 * * *", zone = "Asia/Seoul")
     fun callAlarm() {
         alarmRepository.findAll()
             .map {
@@ -26,10 +26,19 @@ class Schedule (
                     null -> alarmRepository.delete(it)
                     else ->
                         if (it.role == null || jda.getRoleById(it.role!!) == null)
-                            channel.sendMessage("🔔 **"+it.title+"**\n\n"+it.content)
+                            channel.sendMessage(
+                                    "🔔 **"+it.title+"**" + "\n" +
+                                    "\n" +
+                                    it.content
+                            )
                                 .queue()
                         else
-                            channel.sendMessage(jda.getRoleById(it.role!!)!!.asMention+"\n🔔 **"+it.title+"**\n\n"+it.content)
+                            channel.sendMessage(
+                                jda.getRoleById(it.role!!)!!.asMention + "\n" +
+                                        "🔔 **"+it.title+"**" + "\n" +
+                                        "\n" +
+                                        it.content
+                            )
                                 .queue()
 
                 }
