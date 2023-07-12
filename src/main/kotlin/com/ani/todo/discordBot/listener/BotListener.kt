@@ -16,6 +16,7 @@ import com.ani.todo.discordBot.todo.exception.ErrorCode
 import com.ani.todo.discordBot.todo.repository.AlarmRepository
 import com.ani.todo.discordBot.todo.repository.TodoRepository
 import com.ani.todo.discordBot.util.MessageUtil
+import net.dv8tion.jda.api.entities.channel.ChannelType
 
 @Component
 class BotListener (
@@ -95,6 +96,11 @@ class BotListener (
                     else -> event.getOption("role")!!.asRole.id
                 }
 
+                if(event.getOption("channel")!!.channelType == ChannelType.GROUP){
+                    event.reply("유효한 타입의 채널이 아니에요.")
+                    return
+                }
+
                 if(alarmRepository.findByTitleAndChannelId(title, channel.id) != null) {
                     event.reply("채널에 이미 같은 제목의 알람이 존재해요.").queue()
                 }else {
@@ -104,14 +110,18 @@ class BotListener (
 
             }
             "silence" -> {
-                val title = event.getOption("title")!!.asString
-                val channel = event.getOption("channel")!!.asString
 
-                if(alarmRepository.findByTitleAndChannelId(title, channel) == null){
-                    event.reply("그런 제목의 알람이 존재하지 않아요.").queue()
+                val channel = event.getOption("channel")!!.asChannel.id
+
+
+                if(alarmRepository.findByChannelId(channel) == null){
+                    event.reply("채널에 알람이 존재하지 않아요.").queue()
                 }else{
-                    alarmRepository.delete(alarmRepository.findByTitleAndChannelId(title,channel)!!)
-                    event.reply("알람을 지웠어요.").queue()
+                    val action = messageUtil.choiceAlarm(channel, event.user, "silence")
+                    event.reply("지울 알림의 제목을 선택해 주세요.")
+                        .addActionRow(action)
+                        .queue()
+
                 }
             }
         }
@@ -145,18 +155,26 @@ class BotListener (
 
         val value = event.selectedOptions.firstOrNull()!!.value.split(":")
 
-        if(event.user.id != value[2])
+        if(event.user.id != value[1])
             return
 
-        when(value[1]){
+        when(value[0]){
             "complete" -> {
 
-                val todo = todoRepository.findById(value[0].toLong()).get().completeTodo()
+                val todo = todoRepository.findById(value[2].toLong()).get().completeTodo()
                     .let { todoRepository.save(it) }
 
                 event.message.editMessageComponents().queue()
                 event.message.editMessage(MessageEditData.fromContent("✅ :: ${todo.title}")).queue()
 
+            }
+            "silence" -> {
+                val alarm = alarmRepository.findByTitleAndChannelId(value[2], value[3])!!
+
+                alarmRepository.delete(alarm)
+
+                event.message.editMessageComponents().queue()
+                event.message.editMessage(MessageEditData.fromContent("❎ :: ${alarm.title}")).queue()
             }
             else -> buildMessage(event.channel, ErrorCode.INVALID_COMMAND.title).queue()
         }

@@ -9,11 +9,13 @@ import java.awt.Color
 import java.time.Instant
 import net.dv8tion.jda.api.EmbedBuilder
 import com.ani.todo.discordBot.todo.entity.Todo
+import com.ani.todo.discordBot.todo.repository.AlarmRepository
 import java.util.*
 
 @Component
 class MessageUtilImpl(
-    private val todoRepository: TodoRepository
+    private val todoRepository: TodoRepository,
+    private val alarmRepository: AlarmRepository
 ): MessageUtil {
 
     override fun info(): EmbedBuilder = EmbedBuilder()
@@ -60,14 +62,28 @@ class MessageUtilImpl(
     override fun choiceTodo(user: User, type: String) : StringSelectMenu {
 
         val a = StringSelectMenu.create("todo")
-            .setPlaceholder("완료할 todo를 선택하세요.")
+            .setPlaceholder("완료할 할 일을 선택하세요.")
             .setRequiredRange(1, 1)
 
         todoRepository.findByUserId(user.id)
                     .forEach {
                         if (it.status == TodoStatus.STAY)
-                            a.addOption(it.title, it.id.toString()+":"+type+":"+user.id)
+                            a.addOption(it.title, type+":"+user.id+":"+it.id.toString())
                     }
+
+
+        return a.build()
+    }
+
+    override fun choiceAlarm(channelId: String, user: User, type: String): StringSelectMenu? {
+        val a = StringSelectMenu.create("alarm")
+            .setPlaceholder("삭제할 알람을 선택하세요.")
+            .setRequiredRange(1, 1)
+
+        alarmRepository.findByChannelId(channelId)!!
+            .forEach {
+                a.addOption(it.title, type+":"+user.id+":"+it.title+":"+it.channelId)
+            }
 
 
         return a.build()
