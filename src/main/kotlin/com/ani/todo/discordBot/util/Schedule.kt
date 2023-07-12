@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component
 class Schedule (
     private val todoRepository: TodoRepository,
     private val alarmRepository: AlarmRepository,
-    private val messageUtil: MessageUtil,
     private val jda: JDA
 ){
     @Scheduled(cron = "0 0 0 * * *")
@@ -27,12 +26,10 @@ class Schedule (
                     null -> alarmRepository.delete(it)
                     else ->
                         if (it.role == null || jda.getRoleById(it.role!!) == null)
-                            channel.sendMessage("")
-                                .setEmbeds(messageUtil.alarm(it.title, it.content).build())
+                            channel.sendMessage("🔔 **"+it.title+"**\n\n"+it.content)
                                 .queue()
                         else
-                            channel.sendMessage(jda.getRoleById(it.role!!)!!.asMention)
-                                .setEmbeds(messageUtil.alarm(it.title, it.content).build())
+                            channel.sendMessage(jda.getRoleById(it.role!!)!!.asMention+"\n🔔 **"+it.title+"**\n\n"+it.content)
                                 .queue()
 
                 }

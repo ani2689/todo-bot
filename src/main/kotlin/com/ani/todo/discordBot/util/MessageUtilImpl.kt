@@ -98,10 +98,4 @@ class MessageUtilImpl(
                 .addField("오늘 할 일", yesterdayTask, false)
                 .addField("어려웠던 점", yesterdayTask, false)
                 .setTimestamp(Instant.now())
-
-    override fun alarm(title: String, content: String?) =
-        EmbedBuilder()
-            .setColor(Color.YELLOW)
-            .setTitle(title)
-            .setDescription(content)
 }
