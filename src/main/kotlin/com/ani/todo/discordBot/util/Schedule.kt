@@ -12,7 +12,7 @@ class Schedule (
     private val alarmRepository: AlarmRepository,
     private val jda: JDA
 ){
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     fun initTodo(){
         todoRepository.findAll()
             .map { todoRepository.delete(it) }
