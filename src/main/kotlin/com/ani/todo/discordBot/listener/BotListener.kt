@@ -138,16 +138,16 @@ class BotListener (
     override fun onButtonInteraction(event: ButtonInteractionEvent) {
         val keyword  = event.button.id!!.split(":")[0]
         val userId = event.button.id!!.split(":")[1]
-        val user = event.jda.getUserById(userId)
+        val user = event.jda.getUserById(userId)!!
 
 
         when(keyword){
-            "refresh" -> event.editMessageEmbeds(buildMessage(event.channel,"새로고침") {messageUtil.todoList(user!!)}.embeds).queue()
+            "refresh" -> event.editMessageEmbeds(buildMessage(event.channel,"새로고침") {messageUtil.todoList(user)}.embeds).queue()
             "hasten" -> {
                 if(todoRepository.findByUserIdAndStatus(userId, TodoStatus.STAY).isEmpty()){
-                    event.channel.sendMessage("${user?.asMention}, 할 거 없어요? 🤷‍♀️").queue()
+                    event.channel.sendMessage("${user.asMention}, 할 거 없어요? 🤷‍♀️").queue()
                 }else{
-                    event.channel.sendMessage("${user?.asMention}? 다 울었으면 이제 할 일을 해요 🙋‍♀️").queue()
+                    event.channel.sendMessage("${user.asMention}? 다 울었으면 이제 할 일을 해요 🙋‍♀️").queue()
                 }
                 event.deferEdit().queue()
             }
