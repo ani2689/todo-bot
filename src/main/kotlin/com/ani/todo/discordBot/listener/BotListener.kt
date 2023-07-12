@@ -113,8 +113,12 @@ class BotListener (
 
                 val channel = event.getOption("채널")!!.asChannel.id
 
+                if(event.getOption("채널")!!.channelType == ChannelType.GROUP){
+                    event.reply("유효한 타입의 채널이 아니에요.")
+                    return
+                }
 
-                if(alarmRepository.findByChannelId(channel) == null){
+                if(alarmRepository.findByChannelId(channel).isEmpty()){
                     event.reply("채널에 알람이 존재하지 않아요.").queue()
                 }else{
                     val action = messageUtil.choiceAlarm(channel, event.user, "silence")
