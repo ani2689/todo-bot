@@ -18,7 +18,7 @@ class Schedule (
             .map { todoRepository.delete(it) }
     }
 
-    @Scheduled(cron = "30 8 * * * *")
+    @Scheduled(cron = "0 30 8 * * *")
     fun callAlarm() {
         alarmRepository.findAll()
             .map {
