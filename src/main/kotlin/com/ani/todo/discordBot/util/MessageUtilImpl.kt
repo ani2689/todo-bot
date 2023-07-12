@@ -95,7 +95,7 @@ class MessageUtilImpl(
             EmbedBuilder()
                 .setColor(Color.WHITE)
                 .addField("어제 한 일", yesterdayTask, false)
-                .addField("오늘 할 일", yesterdayTask, false)
-                .addField("어려웠던 점", yesterdayTask, false)
+                .addField("오늘 할 일", todayTask, false)
+                .addField("어려웠던 점", hardTask, false)
                 .setTimestamp(Instant.now())
 }
