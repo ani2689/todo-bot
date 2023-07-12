@@ -64,7 +64,7 @@ class MessageUtilImpl(
     override fun choiceTodo(user: User, type: String) : StringSelectMenu {
 
         val a = StringSelectMenu.create("todo")
-            .setPlaceholder("완료할 할 일을 선택하세요.")
+            .setPlaceholder("할 일 선택")
             .setRequiredRange(1, 1)
 
         todoRepository.findByUserId(user.id)
@@ -79,7 +79,7 @@ class MessageUtilImpl(
 
     override fun choiceAlarm(channelId: String, user: User, type: String): StringSelectMenu? {
         val a = StringSelectMenu.create("alarm")
-            .setPlaceholder("삭제할 알람을 선택하세요.")
+            .setPlaceholder("알람 선택")
             .setRequiredRange(1, 1)
 
         alarmRepository.findByChannelId(channelId)
