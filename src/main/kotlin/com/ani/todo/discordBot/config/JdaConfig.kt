@@ -46,7 +46,7 @@ class JdaConfig (
         jda.upsertCommand("데일리", "데일리를 작성합니다.")
             .addOptions(
                 OptionData(OptionType.STRING, "어제한일", "어제 한 일을 작성해 주세요.").setRequired(true),
-                OptionData(OptionType.STRING, "오늘하일", "오늘 할 일을 작성해 주세요.").setRequired(true),
+                OptionData(OptionType.STRING, "오늘한일", "오늘 할 일을 작성해 주세요.").setRequired(true),
                 OptionData(OptionType.STRING, "어려웠던점", "어려웠던 점을 작성해 주세요.").setRequired(true),
                 OptionData(OptionType.STRING, "공유", "링크를 남겨주세요.").setRequired(false)
             ).queue()
