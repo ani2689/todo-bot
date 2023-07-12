@@ -138,7 +138,7 @@ class BotListener (
     override fun onButtonInteraction(event: ButtonInteractionEvent) {
         val keyword  = event.button.id!!.split(":")[0]
         val userId = event.button.id!!.split(":")[1]
-        val user = event.jda.getUserById(userId)!!
+        val user = event.message.author
 
 
         when(keyword){
