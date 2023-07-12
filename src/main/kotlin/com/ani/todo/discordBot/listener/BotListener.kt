@@ -28,14 +28,14 @@ class BotListener (
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
 
         when(event.name){
-            "help" -> {
+            "도움말" -> {
                 event.reply("명령어 목록")
                     .setEmbeds(messageUtil.info().build())
                     .queue()
             }
-            "todo" ->  {
+            "할일" ->  {
                 val user = when(
-                    val user = event.getOption("user")
+                    val user = event.getOption("대상")
                 ){
                     null -> event.user
                     else -> user.asUser
@@ -50,15 +50,15 @@ class BotListener (
                     )
                     .queue()
             }
-            "add" -> {
-                val todo = Todo(0, event.user.id, event.getOption("todo")!!.asString, TodoStatus.STAY)
+            "할일추가" -> {
+                val todo = Todo(0, event.user.id, event.getOption("할일")!!.asString, TodoStatus.STAY)
 
                 todoRepository.save(todo)
 
                 event.reply("✍ :: ${todo.title}")
                     .queue()
             }
-            "complete" -> {
+            "할일완료" -> {
                 if(todoRepository.findByUserIdAndStatus(event.user.id, TodoStatus.STAY).isEmpty())
                     event.reply("완료할 할 일이 존재하지 않아요.").queue()
                 else {
@@ -68,13 +68,13 @@ class BotListener (
                         .queue()
                 }
             }
-            "daily" -> {
-                val yesterdayTask = event.getOption("yesterday_task")!!.asString
-                val todayTask = event.getOption("today_task")!!.asString
-                val hardTask = event.getOption("hard_task")!!.asString
-                val url = when(event.getOption("share")){
+            "데일리" -> {
+                val yesterdayTask = event.getOption("어제한일")!!.asString
+                val todayTask = event.getOption("오늘할일")!!.asString
+                val hardTask = event.getOption("어려웠던점")!!.asString
+                val url = when(event.getOption("공유")){
                     null -> null
-                    else -> event.getOption("share")!!.asString
+                    else -> event.getOption("공유")!!.asString
                 }
 
                 event.reply(event.user.asMention+"님의 데일리")
@@ -84,19 +84,19 @@ class BotListener (
                     .queue()
 
             }
-            "loud" -> {
-                val title = event.getOption("title")!!.asString
-                val channel = event.getOption("channel")!!.asChannel
-                val content = when(event.getOption("content")){
+            "알람추가" -> {
+                val title = event.getOption("제목")!!.asString
+                val channel = event.getOption("채널")!!.asChannel
+                val content = when(event.getOption("내용")){
                     null -> null
-                    else -> event.getOption("content")!!.asString
+                    else -> event.getOption("내용")!!.asString
                 }
-                val role = when(event.getOption("role")){
+                val role = when(event.getOption("역할")){
                     null -> null
-                    else -> event.getOption("role")!!.asRole.id
+                    else -> event.getOption("역할")!!.asRole.id
                 }
 
-                if(event.getOption("channel")!!.channelType == ChannelType.GROUP){
+                if(event.getOption("채널")!!.channelType == ChannelType.GROUP){
                     event.reply("유효한 타입의 채널이 아니에요.")
                     return
                 }
@@ -109,9 +109,9 @@ class BotListener (
                 }
 
             }
-            "silence" -> {
+            "알람삭제" -> {
 
-                val channel = event.getOption("channel")!!.asChannel.id
+                val channel = event.getOption("채널")!!.asChannel.id
 
 
                 if(alarmRepository.findByChannelId(channel) == null){
