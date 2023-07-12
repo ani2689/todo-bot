@@ -80,7 +80,7 @@ class MessageUtilImpl(
             .setPlaceholder("삭제할 알람을 선택하세요.")
             .setRequiredRange(1, 1)
 
-        alarmRepository.findByChannelId(channelId)!!
+        alarmRepository.findByChannelId(channelId)
             .forEach {
                 a.addOption(it.title, type+":"+user.id+":"+it.title+":"+it.channelId)
             }
@@ -89,12 +89,17 @@ class MessageUtilImpl(
         return a.build()
     }
 
-    override fun dailyBox(yesterdayTask: String, todayTask: String, hardTask: String, url: String?) =
+    override fun dailyBox(yesterdayTask: String, todayTask: String, hardTask: String) =
             EmbedBuilder()
                 .setColor(Color.WHITE)
                 .addField("어제 한 일", yesterdayTask, false)
                 .addField("오늘 할 일", yesterdayTask, false)
                 .addField("어려웠던 점", yesterdayTask, false)
-                .setThumbnail(url)
                 .setTimestamp(Instant.now())
+
+    override fun alarm(title: String, content: String?) =
+        EmbedBuilder()
+            .setColor(Color.YELLOW)
+            .setTitle(title)
+            .setDescription(content)
 }

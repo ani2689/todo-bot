@@ -9,5 +9,6 @@ interface MessageUtil {
     fun todoList(user: User): EmbedBuilder
     fun choiceTodo(user: User, type: String): StringSelectMenu?
     fun choiceAlarm(channelId: String, user: User, type: String): StringSelectMenu?
-    fun dailyBox(yesterdayTask: String, todayTask: String, hardTask: String, url: String?): EmbedBuilder
+    fun dailyBox(yesterdayTask: String, todayTask: String, hardTask: String): EmbedBuilder
+    fun alarm(title: String, content: String?): EmbedBuilder
 }

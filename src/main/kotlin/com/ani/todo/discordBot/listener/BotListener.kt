@@ -73,13 +73,13 @@ class BotListener (
                 val todayTask = event.getOption("오늘할일")!!.asString
                 val hardTask = event.getOption("어려웠던점")!!.asString
                 val url = when(event.getOption("공유")){
-                    null -> null
+                    null -> ""
                     else -> event.getOption("공유")!!.asString
                 }
 
-                event.reply(event.user.asMention+"님의 데일리")
-                    .setEmbeds(messageUtil.dailyBox(yesterdayTask, todayTask, hardTask, url)
-                        .setFooter(event.user.name, event.user.effectiveAvatarUrl)
+                event.reply(event.user.asMention+"님의 데일리" + "\n" + url)
+                    .setEmbeds(messageUtil.dailyBox(yesterdayTask, todayTask, hardTask)
+                        .setThumbnail(event.user.effectiveAvatarUrl)
                         .build())
                     .queue()
 
@@ -110,7 +110,6 @@ class BotListener (
 
             }
             "알람삭제" -> {
-
                 val channel = event.getOption("채널")!!.asChannel.id
 
                 if(event.getOption("채널")!!.channelType != ChannelType.TEXT){
