@@ -19,7 +19,7 @@ class JdaConfig (
 ){
 
     private val jda = JDABuilder.createDefault(botToken)
-        .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES)
+        .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS)
         .addEventListeners(botListener)
         .setActivity(Activity.playing("해야 할 일 재촉"))
         .build()
