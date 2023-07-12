@@ -51,6 +51,11 @@ class BotListener (
                     .queue()
             }
             "할일추가" -> {
+                if(todoRepository.findByUserIdAndStatus(event.user.id, TodoStatus.STAY).size>=25){
+                    event.reply("해야 할 일이 너무 많아요. 남아있는 일을 끝낸 뒤 다시 시도해주세요!")
+                    return
+                }
+
                 val todo = Todo(0, event.user.id, event.getOption("할일")!!.asString, TodoStatus.STAY)
 
                 todoRepository.save(todo)
