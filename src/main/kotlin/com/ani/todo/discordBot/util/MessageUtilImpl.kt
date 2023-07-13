@@ -91,7 +91,7 @@ class MessageUtilImpl(
         return a.build()
     }
 
-    override fun dailyBox(yesterdayTask: String, todayTask: String, hardTask: String) =
+    override fun daily(yesterdayTask: String, todayTask: String, hardTask: String) =
             EmbedBuilder()
                 .setColor(Color.WHITE)
                 .addField("어제 한 일", yesterdayTask, false)

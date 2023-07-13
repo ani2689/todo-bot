@@ -83,7 +83,7 @@ class BotListener (
                 }
 
                 event.reply(event.user.asMention+"님의 데일리" + "\n" + url)
-                    .setEmbeds(messageUtil.dailyBox(yesterdayTask, todayTask, hardTask)
+                    .setEmbeds(messageUtil.daily(yesterdayTask, todayTask, hardTask)
                         .setThumbnail(event.user.effectiveAvatarUrl)
                         .build())
                     .queue()
