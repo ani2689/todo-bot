@@ -53,15 +53,14 @@ class BotListener (
             "할일추가" -> {
                 if(todoRepository.findByUserIdAndStatus(event.user.id, TodoStatus.STAY).size>=25){
                     event.reply("해야 할 일이 너무 많아요. 남아있는 일을 끝낸 뒤 다시 시도해주세요!")
-                    return
+                }else {
+                    val todo = Todo(0, event.user.id, event.getOption("할일")!!.asString, TodoStatus.STAY)
+
+                    todoRepository.save(todo)
+
+                    event.reply("✍ :: ${todo.title}")
+                        .queue()
                 }
-
-                val todo = Todo(0, event.user.id, event.getOption("할일")!!.asString, TodoStatus.STAY)
-
-                todoRepository.save(todo)
-
-                event.reply("✍ :: ${todo.title}")
-                    .queue()
             }
             "할일완료" -> {
                 if(todoRepository.findByUserIdAndStatus(event.user.id, TodoStatus.STAY).isEmpty())
@@ -103,12 +102,9 @@ class BotListener (
 
                 if(event.getOption("채널")!!.channelType != ChannelType.TEXT){
                     event.reply("유효한 타입의 채널이 아니에요.").queue()
-                    return
-                }
-
-                if(alarmRepository.findByTitleAndChannelId(title, channel.id) != null) {
+                } else if (alarmRepository.findByTitleAndChannelId(title, channel.id) != null) {
                     event.reply("채널에 이미 같은 제목의 알람이 존재해요.").queue()
-                }else {
+                } else {
                     alarmRepository.save(Alarm(0, channel.id, title, content, role))
                     event.reply("알람 설정이 완료되었어요.").queue()
                 }
@@ -119,10 +115,7 @@ class BotListener (
 
                 if(event.getOption("채널")!!.channelType != ChannelType.TEXT){
                     event.reply("유효한 타입의 채널이 아니에요.").queue()
-                    return
-                }
-
-                if(alarmRepository.findByChannelId(channel).isEmpty()){
+                }else if(alarmRepository.findByChannelId(channel).isEmpty()){
                     event.reply("채널에 알람이 존재하지 않아요.").queue()
                 }else{
                     val action = messageUtil.choiceAlarm(channel, event.user, "silence")
@@ -162,12 +155,9 @@ class BotListener (
 
     override fun onStringSelectInteraction(event: StringSelectInteractionEvent) {
 
-        if(event.selectedOptions.firstOrNull() == null)
-            return
-
         val value = event.selectedOptions.firstOrNull()!!.value.split(":")
 
-        if(event.user.id != value[1])
+        if(event.user.id != value[1] || event.selectedOptions.firstOrNull() == null)
             return
 
         when(value[0]){
