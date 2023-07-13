@@ -129,7 +129,6 @@ class BotListener (
                     event.reply("지울 알림의 제목을 선택해 주세요.")
                         .addActionRow(action)
                         .queue()
-
                 }
             }
         }
@@ -150,9 +149,9 @@ class BotListener (
             "refresh" -> event.editMessageEmbeds(buildMessage(event.channel,"새로고침") {messageUtil.todoList(user)}.embeds).queue()
             "hasten" -> {
                 if(todoRepository.findByUserIdAndStatus(userId, TodoStatus.STAY).isEmpty()){
-                    event.channel.sendMessage("${user.asMention}, 할 거 없어요? 🤷‍♀️").queue()
+                    event.channel.sendMessage("🤷‍♀️ :: ${event.user.asMention}님이 부릅니다. ** 🎵 ${user.asMention}, 할 일 없어요? 🎵 **").queue()
                 }else{
-                    event.channel.sendMessage("${user.asMention}? 다 울었으면 이제 할 일을 해요 🙋‍♀️").queue()
+                    event.channel.sendMessage("🙋‍♀️ :: ${event.user.asMention}님이 부릅니다.  ** 🎵 ${user.asMention}? 다 울었으면 이제 할 일을 해요. 🎵 **").queue()
                 }
                 event.deferEdit().queue()
             }
