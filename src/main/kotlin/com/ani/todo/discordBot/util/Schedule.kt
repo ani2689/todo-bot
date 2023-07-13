@@ -24,22 +24,27 @@ class Schedule (
             .map {
                 when (val channel = jda.getTextChannelById(it.channelId)) {
                     null -> alarmRepository.delete(it)
-                    else ->
+                    else -> {
+                        val content = when(it.content) {
+                            null -> ""
+                            else -> it.content
+                        }
                         if (it.role == null || jda.getRoleById(it.role!!) == null)
                             channel.sendMessage(
-                                    "🔔 **"+it.title+"**" + "\n" +
-                                    "\n" +
-                                    it.content
+                                "🔔 **" + it.title + "**" + "\n" +
+                                        "\n" +
+                                        content
                             )
                                 .queue()
                         else
                             channel.sendMessage(
                                 jda.getRoleById(it.role!!)!!.asMention + "\n" +
-                                        "🔔 **"+it.title+"**" + "\n" +
+                                        "🔔 **" + it.title + "**" + "\n" +
                                         "\n" +
-                                        it.content
+                                        content
                             )
                                 .queue()
+                    }
 
                 }
             }
