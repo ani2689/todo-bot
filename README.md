@@ -31,7 +31,7 @@
 <br>
 
 ### 💥 이슈 제보
-###### `예상치 못한 응답`이나 `오류`, `새로운 기능` 제보는 상단의 이슈나 하단의 연락처로 감사히 받고 있습니다!
+###### `예상치 못한 응답`이나 `오류`, `새로운 기능` 제보는 상단의 이슈나 하단의 연락처로 감사히 받고 있습니다 🙂
 
 ![Discord](https://img.shields.io/badge/ani.__n0-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white)
 ![Gmail](https://img.shields.io/badge/ojno7777@gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)
