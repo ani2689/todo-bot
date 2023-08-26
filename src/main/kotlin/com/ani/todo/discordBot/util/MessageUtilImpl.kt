@@ -82,7 +82,7 @@ class MessageUtilImpl(
             .setPlaceholder("알람 선택")
             .setRequiredRange(1, 1)
 
-        alarmRepository.findByChannelId(channelId)
+        alarmRepository.findByChannelId(channelId)!!
             .forEach {
                 a.addOption(it.title, type+":"+user.id+":"+it.title+":"+it.channelId)
             }
