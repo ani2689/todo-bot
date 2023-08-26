@@ -34,16 +34,14 @@ class Schedule (
                                 "🔔 **" + it.title + "**" + "\n" +
                                         "\n" +
                                         content
-                            )
-                                .queue()
+                            ).queue()
                         else
                             channel.sendMessage(
                                 jda.getRoleById(it.role!!)!!.asMention + "\n" +
                                         "🔔 **" + it.title + "**" + "\n" +
                                         "\n" +
                                         content
-                            )
-                                .queue()
+                            ).queue()
                     }
 
                 }
