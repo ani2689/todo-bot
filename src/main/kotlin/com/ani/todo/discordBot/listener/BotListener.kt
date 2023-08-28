@@ -105,26 +105,26 @@ class BotListener (
 
                 if(event.getOption("채널")!!.channelType != ChannelType.TEXT){
                     event.reply("유효한 타입의 채널이 아니에요.").queue()
-                } else if (time.split(":").size != 2 || (isNumeric(time.split(":")[0]) && isNumeric(time.split(":")[1]) )){
+                } else if (time.split(":").size != 2 || time.split(":")[0].all { !it.isDigit()} || time.split(":")[1].all { !it.isDigit()} ){
                     event.reply("유효한 시간 양식이 아니에요.\n00:00 양식에 맞춰 입력해주세요.").queue()
                 } else if (time.split(":")[1].toInt() % 10 != 0){
                     event.reply("유효한 시간 양식이 아니에요.\n10분 단위로 입력해주세요.").queue()
-                } else if (time.split(":")[1].toInt() > 59 || time.split(":")[0].toInt()>23) {
-                    event.reply("유효한 시간 양식이 아니에요. 알맞은 시간을 입력해주세요.")
+                } else if (time.split(":")[1].toInt() !in 0..59 || time.split(":")[0].toInt() !in 0..23) {
+                    event.reply("유효한 시간 양식이 아니에요.\n알맞은 시간을 입력해주세요.").queue()
                 } else if (alarmRepository.findByTitleAndChannelId(title, channel.id) != null) {
                     event.reply("채널에 이미 같은 제목의 알람이 존재해요.").queue()
                 } else {
-                    val formatter = DateTimeFormatter.ofPattern("HH:mm")
+                    val afterTime = String.format("%02d:%02d", time.split(":")[0].toInt(), time.split(":")[1].toInt())
                     val alarm = Alarm(
                         0,
                         channel.id,
                         title,
                         content,
                         role,
-                        LocalTime.parse(time, formatter).format(formatter)
+                        afterTime
                     )
                     alarmRepository.save(alarm)
-                    event.reply("알람 설정이 완료되었어요. 앞으로 $time 에 $title 알람이 울릴 거예요!").queue()
+                    event.reply("알람 설정이 완료되었어요. 앞으로 **$afterTime** 에 $title 알람이 울릴 거예요!").queue()
                 }
 
             }
