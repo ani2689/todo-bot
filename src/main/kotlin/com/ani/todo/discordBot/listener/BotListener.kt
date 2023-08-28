@@ -66,7 +66,7 @@ class BotListener (
                 if(todoRepository.findByUserIdAndStatus(event.user.id, TodoStatus.STAY).isEmpty())
                     event.reply("완료할 할 일이 존재하지 않아요.").queue()
                 else {
-                    val action = messageUtil.choiceTodo(event.user, "complete")
+                    val action = messageUtil.choiceTodo(event.user)
                     event.reply("완료할 할 일을 선택해 주세요.")
                         .addActionRow(action)
                         .queue()
@@ -118,7 +118,7 @@ class BotListener (
                 }else if(alarmRepository.findByChannelId(channel).isNullOrEmpty()){
                     event.reply("채널에 알람이 존재하지 않아요.").queue()
                 }else{
-                    val action = messageUtil.choiceAlarm(channel, event.user, "silence")
+                    val action = messageUtil.choiceAlarm(channel, event.user)
                     event.reply("지울 알림의 제목을 선택해 주세요.")
                         .addActionRow(action)
                         .queue()

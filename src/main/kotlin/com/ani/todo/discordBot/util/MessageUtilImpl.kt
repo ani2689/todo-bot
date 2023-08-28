@@ -61,7 +61,7 @@ class MessageUtilImpl(
             .setTimestamp(Instant.now())
     }
 
-    override fun choiceTodo(user: User, type: String) : StringSelectMenu {
+    override fun choiceTodo(user: User) : StringSelectMenu {
 
         val a = StringSelectMenu.create("todo")
             .setPlaceholder("할 일 선택")
@@ -70,35 +70,35 @@ class MessageUtilImpl(
         todoRepository.findByUserId(user.id)
                     .forEach {
                         if (it.status == TodoStatus.STAY)
-                            a.addOption(it.title, type+":"+user.id+":"+it.id.toString())
+                            a.addOption(it.title, "complete:"+user.id+":"+it.id.toString())
                     }
 
 
         return a.build()
     }
 
-    override fun choiceAlarm(channelId: String, user: User, type: String): StringSelectMenu? {
+    override fun choiceAlarm(channelId: String, user: User): StringSelectMenu? {
         val a = StringSelectMenu.create("alarm")
             .setPlaceholder("알람 선택")
             .setRequiredRange(1, 1)
 
         alarmRepository.findByChannelId(channelId)!!
             .forEach {
-                a.addOption(it.title, type+":"+user.id+":"+it.title+":"+it.channelId)
+                a.addOption(it.title, "silence:"+user.id+":"+it.title+":"+it.channelId)
             }
 
 
         return a.build()
     }
 
-    override fun choiceTime(user: User): StringSelectMenu? {
+    override fun choiceTime(user: User): StringSelectMenu {
         val a = StringSelectMenu.create("time")
             .setPlaceholder("시간 선택")
             .setRequiredRange(1, 1)
 
         for(hour: Int in 0..23){
             for(minute: Int in 0 .. 60 step(10)){
-                a.addOption("$hour : $minute", user.id)
+                a.addOption("$hour : $minute", "time:"+user.id)
             }
         }
 
