@@ -98,7 +98,7 @@ class MessageUtilImpl(
 
         for(hour: Int in 0..23){
             for(minute: Int in 0 .. 60 step(10)){
-                a.addOption("$hour : $minute", "time:"+user.id)
+                a.addOption("$hour : $minute", "time:"+user.id+"$hour:$minute")
             }
         }
 
