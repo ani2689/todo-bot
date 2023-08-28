@@ -1,5 +1,6 @@
 package com.ani.todo.discordBot.listener
 
+import com.ani.todo.discordBot.todo.entity.Alarm
 import com.ani.todo.discordBot.todo.entity.Todo
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
@@ -16,6 +17,8 @@ import com.ani.todo.discordBot.todo.repository.AlarmRepository
 import com.ani.todo.discordBot.todo.repository.TodoRepository
 import com.ani.todo.discordBot.util.MessageUtil
 import net.dv8tion.jda.api.entities.channel.ChannelType
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @Component
 class BotListener (
@@ -90,6 +93,7 @@ class BotListener (
             "알람추가" -> {
                 val title = event.getOption("제목")!!.asString
                 val channel = event.getOption("채널")!!.asChannel
+                val time = event.getOption("시간")!!.asString
                 val content = when(event.getOption("내용")){
                     null -> null
                     else -> event.getOption("내용")!!.asString
@@ -101,10 +105,26 @@ class BotListener (
 
                 if(event.getOption("채널")!!.channelType != ChannelType.TEXT){
                     event.reply("유효한 타입의 채널이 아니에요.").queue()
+                } else if (time.split(":").size != 2 || (isNumeric(time.split(":")[0]) && isNumeric(time.split(":")[1]) )){
+                    event.reply("유효한 시간 양식이 아니에요.\n00:00 양식에 맞춰 입력해주세요.").queue()
+                } else if (time.split(":")[1].toInt() % 10 != 0){
+                    event.reply("유효한 시간 양식이 아니에요.\n10분 단위로 입력해주세요.").queue()
+                } else if (time.split(":")[1].toInt() > 59 || time.split(":")[0].toInt()>23) {
+                    event.reply("유효한 시간 양식이 아니에요. 알맞은 시간을 입력해주세요.")
                 } else if (alarmRepository.findByTitleAndChannelId(title, channel.id) != null) {
                     event.reply("채널에 이미 같은 제목의 알람이 존재해요.").queue()
                 } else {
-
+                    val formatter = DateTimeFormatter.ofPattern("HH:mm")
+                    val alarm = Alarm(
+                        0,
+                        channel.id,
+                        title,
+                        content,
+                        role,
+                        LocalTime.parse(time, formatter).format(formatter)
+                    )
+                    alarmRepository.save(alarm)
+                    event.reply("알람 설정이 완료되었어요. 앞으로 $time 에 $title 알람이 울릴 거예요!").queue()
                 }
 
             }
@@ -184,4 +204,7 @@ class BotListener (
     fun buildMessage(textChannel: MessageChannelUnion, message: String, util: () -> (EmbedBuilder)) =
         textChannel.sendMessage(message).setEmbeds(util().build())
     fun buildMessage(textChannel: MessageChannelUnion, content: String) = textChannel.sendMessage(content)
+
+    fun isNumeric(input: String) = !input.all { it.isDigit()}
+
 }
