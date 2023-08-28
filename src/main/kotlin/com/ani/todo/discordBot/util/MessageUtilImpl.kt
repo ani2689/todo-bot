@@ -91,6 +91,20 @@ class MessageUtilImpl(
         return a.build()
     }
 
+    override fun choiceTime(user: User): StringSelectMenu? {
+        val a = StringSelectMenu.create("time")
+            .setPlaceholder("시간 선택")
+            .setRequiredRange(1, 1)
+
+        for(hour: Int in 0..23){
+            for(minute: Int in 0 .. 60 step(10)){
+                a.addOption("$hour : $minute", user.id)
+            }
+        }
+
+        return  a.build()
+    }
+
     override fun daily(yesterdayTask: String, todayTask: String, hardTask: String) =
             EmbedBuilder()
                 .setColor(Color.WHITE)
