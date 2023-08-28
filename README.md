@@ -9,7 +9,7 @@
 
 ### 🔖 릴리즈
  
-###### 💡 `1.2.4`   [ 최신 릴리즈 보러가기 ](https://github.com/ani2689/todo-bot/releases/tag/1.2.4)
+###### 💡 `1.3.0`   [ 최신 릴리즈 보러가기 ](https://github.com/ani2689/todo-bot/releases/tag/1.3.0)
 
 <br>
 
