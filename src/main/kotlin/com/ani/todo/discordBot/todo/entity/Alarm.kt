@@ -1,5 +1,6 @@
 package com.ani.todo.discordBot.todo.entity
 
+import org.hibernate.annotations.ColumnDefault
 import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*
 
@@ -21,4 +22,6 @@ data class Alarm (
 
     var role: String?,
 
+    @ColumnDefault("'08-30'")
+    var time: String
 )

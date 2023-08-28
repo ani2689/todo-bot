@@ -55,7 +55,6 @@ class JdaConfig (
         jda.upsertCommand("알람추가", "알람을 추가합니다.")
             .addOptions(
                 OptionData(OptionType.STRING, "제목", "알람의 제목을 설정합니다.").setRequired(true),
-                OptionData(OptionType.STRING, "시간", "알람을 보낼 시간을 설정합니다.").setRequired(true),
                 OptionData(OptionType.CHANNEL, "채널", "알람을 보낼 채널을 설정합니다.").setRequired(true),
                 OptionData(OptionType.ROLE, "역할", "알람을 보낼 대상의 역할을 설정합니다.").setRequired(false),
                 OptionData(OptionType.STRING, "내용", "알람의 내용을 설정합니다.").setRequired(false)

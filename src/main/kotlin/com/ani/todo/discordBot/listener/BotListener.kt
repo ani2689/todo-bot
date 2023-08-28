@@ -1,6 +1,5 @@
 package com.ani.todo.discordBot.listener
 
-import com.ani.todo.discordBot.todo.entity.Alarm
 import com.ani.todo.discordBot.todo.entity.Todo
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
@@ -105,8 +104,7 @@ class BotListener (
                 } else if (alarmRepository.findByTitleAndChannelId(title, channel.id) != null) {
                     event.reply("채널에 이미 같은 제목의 알람이 존재해요.").queue()
                 } else {
-                    alarmRepository.save(Alarm(0, channel.id, title, content, role))
-                    event.reply("알람 설정이 완료되었어요.").queue()
+
                 }
 
             }
@@ -156,18 +154,18 @@ class BotListener (
     override fun onStringSelectInteraction(event: StringSelectInteractionEvent) {
 
         val value = event.selectedOptions.firstOrNull()!!.value.split(":")
+        val user = value[1]
 
-        if(event.user.id != value[1] || event.selectedOptions.firstOrNull() == null)
+        if(event.user.id != user || event.selectedOptions.firstOrNull() == null)
             return
 
         when(value[0]){
             "complete" -> {
-
                 val todo = todoRepository.findById(value[2].toLong()).get().completeTodo()
                     .let { todoRepository.save(it) }
 
                 event.message.editMessageComponents().queue()
-                event.message.editMessage(MessageEditData.fromContent("✅ :: ${todo.title}")).queue()
+                event.message.editMessage(MessageEditData.fromContent("📝 :: ${todo.title} 완료!")).queue()
 
             }
             "silence" -> {
@@ -176,7 +174,7 @@ class BotListener (
                 alarmRepository.delete(alarm)
 
                 event.message.editMessageComponents().queue()
-                event.message.editMessage(MessageEditData.fromContent("❎ :: ${alarm.title}")).queue()
+                event.message.editMessage(MessageEditData.fromContent("🗑 :: ${alarm.title} 알람이 삭제되었어요.")).queue()
             }
             else -> buildMessage(event.channel, ErrorCode.INVALID_COMMAND.title).queue()
         }
