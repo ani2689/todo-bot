@@ -3,6 +3,7 @@ package com.ani.todo.discordBot.util
 import com.ani.todo.discordBot.todo.repository.AlarmRepository
 import com.ani.todo.discordBot.todo.repository.TodoRepository
 import net.dv8tion.jda.api.JDA
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalTime
@@ -20,10 +21,12 @@ class Schedule (
             .map { todoRepository.delete(it) }
     }
 
-    @Scheduled(cron = "0 10 * * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0/5 * * * *", zone = "Asia/Seoul")
     fun callAlarm() {
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         val time = LocalTime.now().format(formatter)
+
+        println("현재시간 : $time")
 
         alarmRepository.findByTime(time)
             ?.map {

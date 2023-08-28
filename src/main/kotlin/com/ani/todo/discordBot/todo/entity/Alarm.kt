@@ -22,6 +22,6 @@ data class Alarm (
 
     var role: String?,
 
-    @ColumnDefault("'08-30'")
+    @ColumnDefault("'08:30'")
     var time: String
 )

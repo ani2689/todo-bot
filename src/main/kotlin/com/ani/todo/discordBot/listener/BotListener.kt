@@ -107,8 +107,8 @@ class BotListener (
                     event.reply("유효한 타입의 채널이 아니에요.").queue()
                 } else if (time.split(":").size != 2 || time.split(":")[0].all { !it.isDigit()} || time.split(":")[1].all { !it.isDigit()} ){
                     event.reply("유효한 시간 양식이 아니에요.\n00:00 양식에 맞춰 입력해주세요.").queue()
-                } else if (time.split(":")[1].toInt() % 10 != 0){
-                    event.reply("유효한 시간 양식이 아니에요.\n10분 단위로 입력해주세요.").queue()
+                } else if (time.split(":")[1].toInt() % 5 != 0){
+                    event.reply("유효한 시간 양식이 아니에요.\n5분 단위로 입력해주세요.").queue()
                 } else if (time.split(":")[1].toInt() !in 0..59 || time.split(":")[0].toInt() !in 0..23) {
                     event.reply("유효한 시간 양식이 아니에요.\n알맞은 시간을 입력해주세요.").queue()
                 } else if (alarmRepository.findByTitleAndChannelId(title, channel.id) != null) {
