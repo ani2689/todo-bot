@@ -124,7 +124,7 @@ class BotListener (
                         afterTime
                     )
                     alarmRepository.save(alarm)
-                    event.reply("알람 설정이 완료되었어요. 매일 **$afterTime** 에 $title 알람이 울릴 거예요!").queue()
+                    event.reply("알람 설정이 완료되었어요. 매일 **$afterTime** 에 **$title** 알람이 울릴 거예요!").queue()
                 }
 
             }
