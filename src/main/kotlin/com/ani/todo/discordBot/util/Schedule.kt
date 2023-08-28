@@ -5,6 +5,8 @@ import com.ani.todo.discordBot.todo.repository.TodoRepository
 import net.dv8tion.jda.api.JDA
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @Component
 class Schedule (
@@ -18,10 +20,13 @@ class Schedule (
             .map { todoRepository.delete(it) }
     }
 
-    @Scheduled(cron = "0 30 8 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 10 * * * *", zone = "Asia/Seoul")
     fun callAlarm() {
-        alarmRepository.findAll()
-            .map {
+        val formatter = DateTimeFormatter.ofPattern("HH:mm")
+        val time = LocalTime.now().format(formatter)
+
+        alarmRepository.findByTime(time)
+            ?.map {
                 when (val channel = jda.getTextChannelById(it.channelId)) {
                     null -> alarmRepository.delete(it)
                     else -> {
