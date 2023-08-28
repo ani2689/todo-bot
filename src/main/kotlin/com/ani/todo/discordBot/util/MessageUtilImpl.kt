@@ -91,14 +91,14 @@ class MessageUtilImpl(
         return a.build()
     }
 
-    override fun choiceTime(channelId: String, user: User): StringSelectMenu {
+    override fun choiceTime(channelId: String, user: User, title: String, content: String?, role: String?): StringSelectMenu {
         val a = StringSelectMenu.create("time")
             .setPlaceholder("시간 선택")
             .setRequiredRange(1, 1)
 
         for(hour: Int in 0..23){
             for(minute: Int in 0 .. 60 step(10)){
-                a.addOption("$hour : $minute", "time:${user.id}:$hour-$minute:$channelId")
+                a.addOption("$hour : $minute", "time:${user.id}:$hour-$minute:$channelId:$title:$content:$role")
             }
         }
 
