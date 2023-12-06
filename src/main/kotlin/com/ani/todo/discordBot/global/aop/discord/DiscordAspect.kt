@@ -13,7 +13,7 @@ import kotlin.runCatching as runCatching
 @Component
 class DiscordAspect {
 
-    @Pointcut("@annotation(com.ani.todo.discordBot.global.aop.discord.Discord)")
+    @Pointcut("@annotation(com.ani.todo.discordBot.global.aop.discord.DiscordErrorCatch)")
     fun annotatedMethod() {}
 
     @Around("annotatedMethod()")
