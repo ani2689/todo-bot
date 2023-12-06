@@ -59,6 +59,25 @@ class TodoServiceImpl(
     }
 
     @Transactional(readOnly = true)
+    override fun hastenTodos(request: HastenTodosRequest): HastenTodosResponse {
+        val receiverId = request.receiver.id
+        val senderMention = request.sender.asMention
+        val receiverMention = request.receiver.asMention
+
+        val content = if(todoRepository.existsByUserIdAndStatus(receiverId, TodoStatus.STAY)){
+            "🙋‍♀️ :: $senderMention 님이 부릅니다.  ** 🎵 $receiverMention ? 다 울었으면 이제 할 일을 해요. 🎵 **"
+        }else{
+            "🤷‍♀️ :: $senderMention 님이 부릅니다. ** 🎵 $receiverMention , 할 일 없어요? 🎵 **"
+        }
+
+        val response = HastenTodosResponse(
+            content = content
+        )
+
+        return response
+    }
+
+    @Transactional(readOnly = true)
     override fun choiceTodo(request: ChoiceTodoRequest): ChoiceTodoResponse {
         val user = request.user
 

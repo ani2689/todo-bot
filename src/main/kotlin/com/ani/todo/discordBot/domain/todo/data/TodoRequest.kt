@@ -11,6 +11,11 @@ data class QueryTodosRequest(
     val user: User
 )
 
+data class HastenTodosRequest(
+    val sender: User,
+    val receiver: User
+)
+
 data class ChoiceTodoRequest(
     val user: User
 )
