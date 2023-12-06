@@ -9,12 +9,15 @@ import com.ani.todo.discordBot.global.util.MessageUtil
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class TodoServiceImpl(
     private val messageUtil: MessageUtil,
     private val todoRepository: TodoRepository
 ) : TodoService {
+
+    @Transactional(rollbackFor = [Exception::class])
     override fun createTodo(request: CreateTodoRequest): CreateTodoResponse {
         val user = request.user
         val content = request.content
@@ -36,6 +39,7 @@ class TodoServiceImpl(
         return response
     }
 
+    @Transactional(readOnly = true)
     override fun queryTodo(request: QueryTodoRequest): QueryTodoResponse {
         val user = request.user
 
@@ -55,6 +59,7 @@ class TodoServiceImpl(
         return response
     }
 
+    @Transactional(readOnly = true)
     override fun choiceTodo(request: ChoiceTodoRequest): ChoiceTodoResponse {
         val user = request.user
 
@@ -71,11 +76,12 @@ class TodoServiceImpl(
         return response
     }
 
+    @Transactional(rollbackFor = [Exception::class])
     override fun checkTodo(request: CheckTodoRequest): CheckTodoResponse {
         val todoId = request.todoId
 
         val todo = todoRepository.findByIdOrNull(todoId)
-            ?: throw DiscordException("완료 대기중인 todo가 존재하지 않아요.")
+            ?: throw DiscordException("완료할 할 일이 존재하지 않아요.")
 
         val checkTodo = todo.run {
             Todo(
