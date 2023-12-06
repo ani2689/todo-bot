@@ -16,5 +16,5 @@ data class ChoiceTodoRequest(
 )
 
 data class CheckTodoRequest(
-    val user: User
+    val todoId: Long
 )

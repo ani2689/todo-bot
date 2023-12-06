@@ -20,6 +20,5 @@ data class ChoiceTodoResponse(
 )
 
 data class CheckTodoResponse(
-    val content: String,
-    val selectMenu: StringSelectMenu?
+    val content: String
 )
