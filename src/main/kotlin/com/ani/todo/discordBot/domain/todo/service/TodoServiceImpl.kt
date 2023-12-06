@@ -39,7 +39,7 @@ class TodoServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun queryTodo(request: QueryTodoRequest): QueryTodoResponse {
+    override fun queryTodos(request: QueryTodosRequest): QueryTodosResponse {
         val user = request.user
 
         val content = "${user.asMention}님의 할 일 목록"
@@ -49,7 +49,7 @@ class TodoServiceImpl(
             Button.secondary("hasten:${user.id}", "재촉!")
         )
 
-        val response = QueryTodoResponse(
+        val response = QueryTodosResponse(
             content = content,
             embed = embed,
             button = button

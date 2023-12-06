@@ -7,7 +7,7 @@ data class CreateTodoRequest(
     val content: String
 )
 
-data class QueryTodoRequest(
+data class QueryTodosRequest(
     val user: User
 )
 

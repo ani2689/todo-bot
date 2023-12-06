@@ -3,7 +3,7 @@ package com.ani.todo.discordBot.global.listener
 import com.ani.todo.discordBot.domain.alarm.entity.Alarm
 import com.ani.todo.discordBot.domain.todo.data.ChoiceTodoRequest
 import com.ani.todo.discordBot.domain.todo.data.CreateTodoRequest
-import com.ani.todo.discordBot.domain.todo.data.QueryTodoRequest
+import com.ani.todo.discordBot.domain.todo.data.QueryTodosRequest
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
@@ -40,11 +40,11 @@ class BotListener (
 
             "할일" -> {
                 val request = event.run {
-                    QueryTodoRequest(
+                    QueryTodosRequest(
                         user = getOption("대상")?.asUser ?: user
                     )
                 }
-                val response = todoService.queryTodo(request)
+                val response = todoService.queryTodos(request)
 
                 event.reply(response.content)
                     .setEmbeds(response.embed.build())

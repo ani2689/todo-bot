@@ -8,7 +8,7 @@ data class CreateTodoResponse(
     val content: String,
 )
 
-data class QueryTodoResponse(
+data class QueryTodosResponse(
     val content: String,
     val embed: EmbedBuilder,
     val button: List<Button>
