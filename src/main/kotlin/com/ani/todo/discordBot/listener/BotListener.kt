@@ -181,11 +181,21 @@ class BotListener (
 
         when(value[0]){
             "complete" -> {
-                val todo = todoRepository.findById(value[2].toLong()).get().completeTodo()
-                    .let { todoRepository.save(it) }
+                val todo = todoRepository.findById(value[2].toLong()).get()
+
+                val checkTodo = todo.run {
+                    Todo(
+                        id = id,
+                        userId = userId,
+                        content = content,
+                        status = TodoStatus.DONE
+                    )
+                }
+
+                todoRepository.save(checkTodo)
 
                 event.message.editMessageComponents().queue()
-                event.message.editMessage(MessageEditData.fromContent("📝 :: ${todo.title} 완료!")).queue()
+                event.message.editMessage(MessageEditData.fromContent("📝 :: ${todo.content} 완료!")).queue()
 
             }
             "silence" -> {
