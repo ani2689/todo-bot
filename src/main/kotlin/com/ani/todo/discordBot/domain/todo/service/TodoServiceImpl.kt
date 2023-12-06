@@ -16,13 +16,12 @@ class TodoServiceImpl(
     private val messageUtil: MessageUtil,
     private val todoRepository: TodoRepository
 ) : TodoService {
-
     @Transactional(rollbackFor = [Exception::class])
     override fun createTodo(request: CreateTodoRequest): CreateTodoResponse {
         val user = request.user
         val content = request.content
 
-        if(todoRepository.findByUserIdAndStatus(user.id, TodoStatus.STAY).size>=25)
+        if(todoRepository.countByUserIdAndStatus(user.id, TodoStatus.STAY)>=25)
             throw DiscordException("해야 할 일이 너무 많아요. 남아있는 일을 끝낸 뒤 다시 시도해주세요!")
 
         val todo = Todo(
@@ -63,7 +62,7 @@ class TodoServiceImpl(
     override fun choiceTodo(request: ChoiceTodoRequest): ChoiceTodoResponse {
         val user = request.user
 
-        if(todoRepository.findByUserIdAndStatus(user.id, TodoStatus.STAY).isEmpty())
+        if(!todoRepository.existsByUserIdAndStatus(user.id, TodoStatus.STAY))
             throw DiscordException("완료할 할 일이 존재하지 않아요.")
 
         val selectMenu = messageUtil.choiceTodo(user)
