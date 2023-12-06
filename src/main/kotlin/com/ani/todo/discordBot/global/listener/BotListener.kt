@@ -1,9 +1,6 @@
 package com.ani.todo.discordBot.global.listener
 
 import com.ani.todo.discordBot.domain.alarm.entity.Alarm
-import com.ani.todo.discordBot.domain.todo.data.ChoiceTodoRequest
-import com.ani.todo.discordBot.domain.todo.data.CreateTodoRequest
-import com.ani.todo.discordBot.domain.todo.data.QueryTodosRequest
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
@@ -12,12 +9,12 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.utils.messages.MessageEditData
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion
 import org.springframework.stereotype.Component
-import com.ani.todo.discordBot.domain.todo.entity.status.TodoStatus
 import com.ani.todo.discordBot.domain.alarm.repository.AlarmRepository
-import com.ani.todo.discordBot.domain.todo.data.CheckTodoRequest
+import com.ani.todo.discordBot.domain.todo.data.*
 import com.ani.todo.discordBot.domain.todo.repository.TodoRepository
 import com.ani.todo.discordBot.domain.todo.service.TodoService
 import com.ani.todo.discordBot.global.aop.discord.DiscordErrorCatch
+import com.ani.todo.discordBot.global.error.DiscordException
 import com.ani.todo.discordBot.global.util.MessageUtil
 import net.dv8tion.jda.api.entities.channel.ChannelType
 
@@ -154,31 +151,39 @@ class BotListener (
         }
     }
 
+    @DiscordErrorCatch
     override fun onButtonInteraction(event: ButtonInteractionEvent) {
         val keyword  = event.button.id!!.split(":")[0]
-        val userId = event.button.id!!.split(":")[1]
-        val user = event.jda.retrieveUserById(userId).complete()
-
-        if(user == null){
-            event.channel.sendMessage("존재하지 않는 유저입니다.").queue()
-            return
-        }
+        val sender = event.user
+        val receiverId = event.button.id!!.split(":")[1]
+        val receiver = event.jda.retrieveUserById(receiverId).complete()
+            ?: throw DiscordException("존재하지 않는 유저입니다.")
 
 
         when(keyword){
-            "refresh" -> event.editMessageEmbeds(buildMessage(event.channel,"새로고침") {messageUtil.todoList(user)}.embeds).queue()
+            "update" -> {
+                val request = QueryTodosRequest(
+                    user = receiver
+                )
+                val response = todoService.queryTodos(request)
+
+                event.editMessageEmbeds(response.embed.build()).queue()
+            }
             "hasten" -> {
-                if(todoRepository.findByUserIdAndStatus(userId, TodoStatus.STAY).isEmpty()){
-                    event.channel.sendMessage("🤷‍♀️ :: ${event.user.asMention}님이 부릅니다. ** 🎵 ${user.asMention}, 할 일 없어요? 🎵 **").queue()
-                }else{
-                    event.channel.sendMessage("🙋‍♀️ :: ${event.user.asMention}님이 부릅니다.  ** 🎵 ${user.asMention}? 다 울었으면 이제 할 일을 해요. 🎵 **").queue()
-                }
+                val request = HastenTodosRequest(
+                    sender = sender,
+                    receiver = receiver
+                )
+                val response = todoService.hastenTodos(request)
+
+                event.channel.sendMessage(response.content).queue()
                 event.deferEdit().queue()
             }
         }
 
     }
 
+    @DiscordErrorCatch
     override fun onStringSelectInteraction(event: StringSelectInteractionEvent) {
 
         val value = event.selectedOptions.firstOrNull()!!.value.split(":")

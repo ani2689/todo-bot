@@ -32,7 +32,7 @@ class TodoServiceImpl(
         todoRepository.save(todo)
 
         val response = CreateTodoResponse(
-            content = content
+            content = "✍ :: $content"
         )
 
         return response
@@ -45,7 +45,7 @@ class TodoServiceImpl(
         val content = "${user.asMention}님의 할 일 목록"
         val embed = messageUtil.todoList(user)
         val button = listOf(
-            Button.success("refresh:${user.id}", "새로고침"),
+            Button.success("update:${user.id}", "새로고침"),
             Button.secondary("hasten:${user.id}", "재촉!")
         )
 
@@ -53,6 +53,25 @@ class TodoServiceImpl(
             content = content,
             embed = embed,
             button = button
+        )
+
+        return response
+    }
+
+    @Transactional(readOnly = true)
+    override fun hastenTodos(request: HastenTodosRequest): HastenTodosResponse {
+        val receiverId = request.receiver.id
+        val senderMention = request.sender.asMention
+        val receiverMention = request.receiver.asMention
+
+        val content = if(todoRepository.existsByUserIdAndStatus(receiverId, TodoStatus.STAY)){
+            "🙋‍♀️ :: $senderMention 님이 부릅니다.  ** 🎵 $receiverMention ? 다 울었으면 이제 할 일을 해요. 🎵 **"
+        }else{
+            "🤷‍♀️ :: $senderMention 님이 부릅니다. ** 🎵 $receiverMention , 할 일 없어요? 🎵 **"
+        }
+
+        val response = HastenTodosResponse(
+            content = content
         )
 
         return response
