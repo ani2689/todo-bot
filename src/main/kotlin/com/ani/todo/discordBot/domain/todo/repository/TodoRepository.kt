@@ -1,7 +1,7 @@
-package com.ani.todo.discordBot.todo.repository
+package com.ani.todo.discordBot.domain.todo.repository
 
-import com.ani.todo.discordBot.todo.entity.Todo
-import com.ani.todo.discordBot.todo.entity.status.TodoStatus
+import com.ani.todo.discordBot.domain.todo.entity.Todo
+import com.ani.todo.discordBot.domain.todo.entity.status.TodoStatus
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 

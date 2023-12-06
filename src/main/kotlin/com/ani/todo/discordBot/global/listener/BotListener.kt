@@ -1,9 +1,9 @@
-package com.ani.todo.discordBot.listener
+package com.ani.todo.discordBot.global.listener
 
-import com.ani.todo.discordBot.alarm.entity.Alarm
-import com.ani.todo.discordBot.todo.data.ChoiceTodoRequest
-import com.ani.todo.discordBot.todo.data.CreateTodoRequest
-import com.ani.todo.discordBot.todo.data.QueryTodoRequest
+import com.ani.todo.discordBot.domain.alarm.entity.Alarm
+import com.ani.todo.discordBot.domain.todo.data.ChoiceTodoRequest
+import com.ani.todo.discordBot.domain.todo.data.CreateTodoRequest
+import com.ani.todo.discordBot.domain.todo.data.QueryTodoRequest
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
@@ -12,13 +12,13 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.utils.messages.MessageEditData
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion
 import org.springframework.stereotype.Component
-import com.ani.todo.discordBot.todo.entity.status.TodoStatus
-import com.ani.todo.discordBot.alarm.repository.AlarmRepository
-import com.ani.todo.discordBot.error.DiscordException
-import com.ani.todo.discordBot.todo.data.CheckTodoRequest
-import com.ani.todo.discordBot.todo.repository.TodoRepository
-import com.ani.todo.discordBot.todo.service.TodoService
-import com.ani.todo.discordBot.util.MessageUtil
+import com.ani.todo.discordBot.domain.todo.entity.status.TodoStatus
+import com.ani.todo.discordBot.domain.alarm.repository.AlarmRepository
+import com.ani.todo.discordBot.global.error.DiscordException
+import com.ani.todo.discordBot.domain.todo.data.CheckTodoRequest
+import com.ani.todo.discordBot.domain.todo.repository.TodoRepository
+import com.ani.todo.discordBot.domain.todo.service.TodoService
+import com.ani.todo.discordBot.global.util.MessageUtil
 import net.dv8tion.jda.api.entities.channel.ChannelType
 import kotlin.runCatching as runCatching
 

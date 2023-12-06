@@ -1,4 +1,4 @@
-package com.ani.todo.discordBot.error
+package com.ani.todo.discordBot.global.error
 
 
 open class DiscordException(

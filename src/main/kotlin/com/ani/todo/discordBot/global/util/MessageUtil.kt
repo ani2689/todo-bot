@@ -1,4 +1,4 @@
-package com.ani.todo.discordBot.util
+package com.ani.todo.discordBot.global.util
 
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.User

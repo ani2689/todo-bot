@@ -1,4 +1,4 @@
-package com.ani.todo.discordBot.alarm.entity
+package com.ani.todo.discordBot.domain.alarm.entity
 
 import org.hibernate.annotations.ColumnDefault
 import org.hibernate.annotations.DynamicUpdate

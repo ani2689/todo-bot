@@ -1,6 +1,6 @@
-package com.ani.todo.discordBot.todo.service
+package com.ani.todo.discordBot.domain.todo.service
 
-import com.ani.todo.discordBot.todo.data.*
+import com.ani.todo.discordBot.domain.todo.data.*
 
 interface TodoService {
     fun createTodo(request: CreateTodoRequest): CreateTodoResponse

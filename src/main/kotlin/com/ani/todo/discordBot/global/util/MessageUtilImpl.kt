@@ -1,15 +1,15 @@
-package com.ani.todo.discordBot.util
+package com.ani.todo.discordBot.global.util
 
-import com.ani.todo.discordBot.todo.entity.status.TodoStatus
-import com.ani.todo.discordBot.todo.repository.TodoRepository
+import com.ani.todo.discordBot.domain.todo.entity.status.TodoStatus
+import com.ani.todo.discordBot.domain.todo.repository.TodoRepository
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu
 import org.springframework.stereotype.Component
 import java.awt.Color
 import java.time.Instant
 import net.dv8tion.jda.api.EmbedBuilder
-import com.ani.todo.discordBot.todo.entity.Todo
-import com.ani.todo.discordBot.alarm.repository.AlarmRepository
+import com.ani.todo.discordBot.domain.todo.entity.Todo
+import com.ani.todo.discordBot.domain.alarm.repository.AlarmRepository
 import java.util.*
 
 @Component

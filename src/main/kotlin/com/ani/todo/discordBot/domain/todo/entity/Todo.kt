@@ -1,6 +1,6 @@
-package com.ani.todo.discordBot.todo.entity
+package com.ani.todo.discordBot.domain.todo.entity
 
-import com.ani.todo.discordBot.todo.entity.status.TodoStatus
+import com.ani.todo.discordBot.domain.todo.entity.status.TodoStatus
 import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*
 

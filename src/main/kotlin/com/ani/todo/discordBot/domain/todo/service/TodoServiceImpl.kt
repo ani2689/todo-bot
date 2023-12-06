@@ -1,10 +1,10 @@
-package com.ani.todo.discordBot.todo.service
+package com.ani.todo.discordBot.domain.todo.service
 
-import com.ani.todo.discordBot.todo.data.*
-import com.ani.todo.discordBot.todo.entity.Todo
-import com.ani.todo.discordBot.todo.entity.status.TodoStatus
-import com.ani.todo.discordBot.todo.repository.TodoRepository
-import com.ani.todo.discordBot.util.MessageUtil
+import com.ani.todo.discordBot.domain.todo.data.*
+import com.ani.todo.discordBot.domain.todo.entity.Todo
+import com.ani.todo.discordBot.domain.todo.entity.status.TodoStatus
+import com.ani.todo.discordBot.domain.todo.repository.TodoRepository
+import com.ani.todo.discordBot.global.util.MessageUtil
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -38,7 +38,7 @@ class TodoServiceImpl(
         return response
     }
 
-    override fun queryTodo(request: QueryTodoRequest): QueryTodoResponse{
+    override fun queryTodo(request: QueryTodoRequest): QueryTodoResponse {
         val user = request.user
 
         val content = "${user.asMention}님의 할 일 목록"

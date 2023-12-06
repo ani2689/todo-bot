@@ -1,4 +1,4 @@
-package com.ani.todo.discordBot.todo.data
+package com.ani.todo.discordBot.domain.todo.data
 
 import net.dv8tion.jda.api.entities.User
 

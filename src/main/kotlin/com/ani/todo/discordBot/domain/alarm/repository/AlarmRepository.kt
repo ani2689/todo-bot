@@ -1,6 +1,6 @@
-package com.ani.todo.discordBot.alarm.repository
+package com.ani.todo.discordBot.domain.alarm.repository
 
-import com.ani.todo.discordBot.alarm.entity.Alarm
+import com.ani.todo.discordBot.domain.alarm.entity.Alarm
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
