@@ -1,7 +1,9 @@
 package com.ani.todo.discordBot.listener
 
-import com.ani.todo.discordBot.todo.entity.Alarm
-import com.ani.todo.discordBot.todo.entity.Todo
+import com.ani.todo.discordBot.alarm.entity.Alarm
+import com.ani.todo.discordBot.todo.data.ChoiceTodoRequest
+import com.ani.todo.discordBot.todo.data.CreateTodoRequest
+import com.ani.todo.discordBot.todo.data.QueryTodoRequest
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
@@ -9,20 +11,20 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.utils.messages.MessageEditData
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion
-import net.dv8tion.jda.api.interactions.components.buttons.Button
 import org.springframework.stereotype.Component
 import com.ani.todo.discordBot.todo.entity.status.TodoStatus
 import com.ani.todo.discordBot.todo.exception.ErrorCode
-import com.ani.todo.discordBot.todo.repository.AlarmRepository
+import com.ani.todo.discordBot.alarm.repository.AlarmRepository
+import com.ani.todo.discordBot.todo.data.CheckTodoRequest
 import com.ani.todo.discordBot.todo.repository.TodoRepository
+import com.ani.todo.discordBot.todo.service.TodoService
 import com.ani.todo.discordBot.util.MessageUtil
 import net.dv8tion.jda.api.entities.channel.ChannelType
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 @Component
 class BotListener (
     private val messageUtil: MessageUtil,
+    private val todoService: TodoService,
     private val todoRepository: TodoRepository,
     private val alarmRepository: AlarmRepository
 ) : ListenerAdapter() {
@@ -36,43 +38,41 @@ class BotListener (
                     .queue()
             }
             "할일" ->  {
-                val user = when(
-                    val user = event.getOption("대상")
-                ){
-                    null -> event.user
-                    else -> user.asUser
-                }
-                event.reply("${user.asMention}님의 할 일 목록")
-                    .setEmbeds( messageUtil.todoList(user).build())
-                    .addActionRow(
-                        listOf(
-                            Button.success("refresh:${user.id}", "새로고침"),
-                            Button.secondary("hasten:${user.id}", "재촉!")
-                        )
+                val request = event.run {
+                    QueryTodoRequest(
+                        user = getOption("대상")?.asUser ?: user
                     )
+                }
+                val response = todoService.queryTodo(request)
+
+                event.reply(response.content)
+                    .setEmbeds(response.embed.build())
+                    .addActionRow(response.button)
                     .queue()
             }
             "할일추가" -> {
-                if(todoRepository.findByUserIdAndStatus(event.user.id, TodoStatus.STAY).size>=25){
-                    event.reply("해야 할 일이 너무 많아요. 남아있는 일을 끝낸 뒤 다시 시도해주세요!")
-                }else {
-                    val todo = Todo(0, event.user.id, event.getOption("할일")!!.asString, TodoStatus.STAY)
-
-                    todoRepository.save(todo)
-
-                    event.reply("✍ :: ${todo.title}")
-                        .queue()
+                val request = event.run{
+                    CreateTodoRequest(
+                        user = user,
+                        content = getOption("할일")!!.asString
+                    )
                 }
+                val response = todoService.createTodo(request)
+
+                event.reply(response.content)
+                    .queue()
             }
             "할일완료" -> {
-                if(todoRepository.findByUserIdAndStatus(event.user.id, TodoStatus.STAY).isEmpty())
-                    event.reply("완료할 할 일이 존재하지 않아요.").queue()
-                else {
-                    val action = messageUtil.choiceTodo(event.user)
-                    event.reply("완료할 할 일을 선택해 주세요.")
-                        .addActionRow(action)
-                        .queue()
+                val request = event.run {
+                    ChoiceTodoRequest(
+                        user = user
+                    )
                 }
+                val response = todoService.choiceTodo(request)
+
+                event.reply(response.content)
+                    .addActionRow(response.selectMenu)
+                    .queue()
             }
             "데일리" -> {
                 val yesterdayTask = event.getOption("어제한일")!!.asString
@@ -181,22 +181,15 @@ class BotListener (
 
         when(value[0]){
             "complete" -> {
-                val todo = todoRepository.findById(value[2].toLong()).get()
-
-                val checkTodo = todo.run {
-                    Todo(
-                        id = id,
-                        userId = userId,
-                        content = content,
-                        status = TodoStatus.DONE
-                    )
-                }
-
-                todoRepository.save(checkTodo)
+                val request = CheckTodoRequest(
+                    todoId = value[2].toLong(),
+                )
+                val response = todoService.checkTodo(request)
 
                 event.message.editMessageComponents().queue()
-                event.message.editMessage(MessageEditData.fromContent("📝 :: ${todo.content} 완료!")).queue()
 
+                MessageEditData.fromContent(response.content)
+                    .let { event.message.editMessage(it).queue() }
             }
             "silence" -> {
                 val alarm = alarmRepository.findByTitleAndChannelId(value[2], value[3])!!
@@ -214,7 +207,5 @@ class BotListener (
     fun buildMessage(textChannel: MessageChannelUnion, message: String, util: () -> (EmbedBuilder)) =
         textChannel.sendMessage(message).setEmbeds(util().build())
     fun buildMessage(textChannel: MessageChannelUnion, content: String) = textChannel.sendMessage(content)
-
-    fun isNumeric(input: String) = !input.all { it.isDigit()}
 
 }

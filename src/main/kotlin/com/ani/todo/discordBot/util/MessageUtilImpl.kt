@@ -9,7 +9,7 @@ import java.awt.Color
 import java.time.Instant
 import net.dv8tion.jda.api.EmbedBuilder
 import com.ani.todo.discordBot.todo.entity.Todo
-import com.ani.todo.discordBot.todo.repository.AlarmRepository
+import com.ani.todo.discordBot.alarm.repository.AlarmRepository
 import java.util.*
 
 @Component
@@ -38,8 +38,8 @@ class MessageUtilImpl(
                 TodoStatus.STAY -> stayList.add(it)
             }}
 
-        val stayListString = if (stayList.isNotEmpty()) "**${stayList.joinToString("\n") { it.title }}**" else ""
-        val doneListString = if (doneList.isNotEmpty()) "~~${doneList.joinToString("\n") { it.title }}~~" else ""
+        val stayListString = if (stayList.isNotEmpty()) "**${stayList.joinToString("\n") { it.content }}**" else ""
+        val doneListString = if (doneList.isNotEmpty()) "~~${doneList.joinToString("\n") { it.content }}~~" else ""
 
         val todoRate = stayList.size.toDouble()/(doneList.size+stayList.size)*100
         val color =  when{
@@ -70,7 +70,7 @@ class MessageUtilImpl(
         todoRepository.findByUserId(user.id)
                     .forEach {
                         if (it.status == TodoStatus.STAY)
-                            a.addOption(it.title, "complete:"+user.id+":"+it.id.toString())
+                            a.addOption(it.content, "complete:"+user.id+":"+it.id.toString())
                     }
 
 
