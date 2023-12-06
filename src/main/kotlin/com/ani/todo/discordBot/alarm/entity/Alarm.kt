@@ -1,4 +1,4 @@
-package com.ani.todo.discordBot.todo.entity
+package com.ani.todo.discordBot.alarm.entity
 
 import org.hibernate.annotations.ColumnDefault
 import org.hibernate.annotations.DynamicUpdate
@@ -11,17 +11,17 @@ data class Alarm (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "todo_id")
-    var id: Long = 0,
+    val id: Long = 0,
 
     @Column(name = "channel_id")
-    var channelId: String,
+    val channelId: String,
 
     val title: String,
 
     val content: String?,
 
-    var role: String?,
+    val role: String?,
 
     @ColumnDefault("'08:30'")
-    var time: String
+    val time: String
 )

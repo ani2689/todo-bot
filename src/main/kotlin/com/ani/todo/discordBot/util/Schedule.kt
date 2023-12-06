@@ -1,9 +1,8 @@
 package com.ani.todo.discordBot.util
 
-import com.ani.todo.discordBot.todo.repository.AlarmRepository
+import com.ani.todo.discordBot.alarm.repository.AlarmRepository
 import com.ani.todo.discordBot.todo.repository.TodoRepository
 import net.dv8tion.jda.api.JDA
-import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalTime
