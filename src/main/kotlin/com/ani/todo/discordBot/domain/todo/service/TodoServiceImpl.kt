@@ -4,6 +4,7 @@ import com.ani.todo.discordBot.domain.todo.data.*
 import com.ani.todo.discordBot.domain.todo.entity.Todo
 import com.ani.todo.discordBot.domain.todo.entity.status.TodoStatus
 import com.ani.todo.discordBot.domain.todo.repository.TodoRepository
+import com.ani.todo.discordBot.global.error.DiscordException
 import com.ani.todo.discordBot.global.util.MessageUtil
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 import org.springframework.data.repository.findByIdOrNull
@@ -18,11 +19,8 @@ class TodoServiceImpl(
         val user = request.user
         val content = request.content
 
-        if(todoRepository.findByUserIdAndStatus(user.id, TodoStatus.STAY).size>=25){
-            return CreateTodoResponse(
-                content = "해야 할 일이 너무 많아요. 남아있는 일을 끝낸 뒤 다시 시도해주세요!"
-            )
-        }
+        if(todoRepository.findByUserIdAndStatus(user.id, TodoStatus.STAY).size>=25)
+            throw DiscordException("해야 할 일이 너무 많아요. 남아있는 일을 끝낸 뒤 다시 시도해주세요!")
 
         val todo = Todo(
             userId = user.id,
@@ -61,10 +59,7 @@ class TodoServiceImpl(
         val user = request.user
 
         if(todoRepository.findByUserIdAndStatus(user.id, TodoStatus.STAY).isEmpty())
-            return ChoiceTodoResponse(
-                content = "완료할 할 일이 존재하지 않아요.",
-                selectMenu = null
-            )
+            throw DiscordException("완료할 할 일이 존재하지 않아요.")
 
         val selectMenu = messageUtil.choiceTodo(user)
 
@@ -80,9 +75,7 @@ class TodoServiceImpl(
         val todoId = request.todoId
 
         val todo = todoRepository.findByIdOrNull(todoId)
-            ?: return CheckTodoResponse(
-                content = "완료 대기중인 todo가 존재하지 않아요."
-            )
+            ?: throw DiscordException("완료 대기중인 todo가 존재하지 않아요.")
 
         val checkTodo = todo.run {
             Todo(
