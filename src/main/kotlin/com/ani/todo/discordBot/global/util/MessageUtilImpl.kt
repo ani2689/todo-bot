@@ -1,7 +1,7 @@
 package com.ani.todo.discordBot.global.util
 
+import com.ani.todo.discordBot.domain.alarm.entity.Alarm
 import com.ani.todo.discordBot.domain.todo.entity.status.TodoStatus
-import com.ani.todo.discordBot.domain.todo.repository.TodoRepository
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu
 import org.springframework.stereotype.Component
@@ -9,14 +9,9 @@ import java.awt.Color
 import java.time.Instant
 import net.dv8tion.jda.api.EmbedBuilder
 import com.ani.todo.discordBot.domain.todo.entity.Todo
-import com.ani.todo.discordBot.domain.alarm.repository.AlarmRepository
-import java.util.*
 
 @Component
-class MessageUtilImpl(
-    private val todoRepository: TodoRepository,
-    private val alarmRepository: AlarmRepository
-): MessageUtil {
+class MessageUtilImpl : MessageUtil {
 
     override fun info(): EmbedBuilder = EmbedBuilder()
         .setColor(Color.cyan)
@@ -28,21 +23,16 @@ class MessageUtilImpl(
         .addField("/알람추가", "알람을 추가합니다.", true)
         .addField("/알람삭제", "알람을 삭제합니다.", true)
 
-    override fun todoList(user: User): EmbedBuilder {
-        val doneList = ArrayList<Todo>()
-        val stayList = ArrayList<Todo>()
-        todoRepository.findByUserId(user.id)
-            .forEach{
-                when(it.status) {
-                TodoStatus.DONE-> doneList.add(it)
-                TodoStatus.STAY -> stayList.add(it)
-            }}
+    override fun todoList(todos: List<Todo>, user: User): EmbedBuilder {
+        val doneList = todos.filter { it.status == TodoStatus.DONE }
+        val stayList = todos.filter { it.status == TodoStatus.STAY }
 
         val stayListString = if (stayList.isNotEmpty()) "**${stayList.joinToString("\n") { it.content }}**" else ""
         val doneListString = if (doneList.isNotEmpty()) "~~${doneList.joinToString("\n") { it.content }}~~" else ""
 
-        val todoRate = stayList.size.toDouble()/(doneList.size+stayList.size)*100
-        val color =  when{
+        val todoRate = stayList.size.toDouble()/todos.size*100
+
+        val color =  when {
             todoRate >= 70 -> Color.RED
             todoRate >= 50 -> Color.ORANGE
             todoRate >= 30 -> Color.YELLOW
@@ -50,52 +40,50 @@ class MessageUtilImpl(
             else -> Color.WHITE
         }
 
+        val field = when(todos.isEmpty()) {
+            true ->  "작성된 할 일이 없어요."
+            false -> "$stayListString\n$doneListString"
+        }
+
+        val description = "해야 할 일: ${stayList.size}개"
+
         return EmbedBuilder()
-            .setAuthor(user.name,null,user.avatarUrl)
-            .setDescription("해야 할 일: ${stayList.size}개")
-            .addField("목록", when(doneList.isEmpty()&&stayList.isEmpty()) {
-                true ->     "작성된 할 일이 없어요."
-                false ->    stayListString + "\n" + doneListString
-            },true)
+            .setAuthor(user.name, user.avatarUrl)
+            .setDescription(description)
+            .addField("목록", field,true)
             .setColor(color)
             .setTimestamp(Instant.now())
     }
 
-    override fun choiceTodo(user: User) : StringSelectMenu {
-
-        val a = StringSelectMenu.create("todo")
+    override fun choiceTodo(todos: List<Todo>, user: User) : StringSelectMenu {
+        val selectMenu = StringSelectMenu.create("todo")
             .setPlaceholder("할 일 선택")
             .setRequiredRange(1, 1)
 
-        todoRepository.findByUserId(user.id)
-                    .forEach {
-                        if (it.status == TodoStatus.STAY)
-                            a.addOption(it.content, "complete:"+user.id+":"+it.id.toString())
-                    }
+        todos.forEach {
+            selectMenu.addOption(it.content, "complete:${user.id}:${it.id}")
+        }
 
-
-        return a.build()
+        return selectMenu.build()
     }
 
-    override fun choiceAlarm(channelId: String, user: User): StringSelectMenu? {
-        val a = StringSelectMenu.create("alarm")
+    override fun choiceAlarm(alarms: List<Alarm>, user: User): StringSelectMenu? {
+        val selectMenu = StringSelectMenu.create("alarm")
             .setPlaceholder("알람 선택")
             .setRequiredRange(1, 1)
 
-        alarmRepository.findByChannelId(channelId)!!
-            .forEach {
-                a.addOption(it.title, "silence:"+user.id+":"+it.title+":"+it.channelId)
-            }
+        alarms.forEach {
+            selectMenu.addOption(it.title, "silence:${user.id}:${it.title}:${it.channelId}")
+        }
 
-
-        return a.build()
+        return selectMenu.build()
     }
 
     override fun daily(yesterdayTask: String, todayTask: String, hardTask: String) =
-            EmbedBuilder()
-                .setColor(Color.WHITE)
-                .addField("어제 한 일", yesterdayTask, false)
-                .addField("오늘 할 일", todayTask, false)
-                .addField("어려웠던 점", hardTask, false)
-                .setTimestamp(Instant.now())
+        EmbedBuilder()
+            .setColor(Color.WHITE)
+            .addField("어제 한 일", yesterdayTask, false)
+            .addField("오늘 할 일", todayTask, false)
+            .addField("어려웠던 점", hardTask, false)
+            .setTimestamp(Instant.now())
 }

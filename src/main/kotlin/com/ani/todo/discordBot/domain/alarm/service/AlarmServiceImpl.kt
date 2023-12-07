@@ -64,10 +64,11 @@ class AlarmServiceImpl(
 
         if (channel.type != ChannelType.TEXT)
             throw DiscordException("유효한 타입의 채널이 아니에요.")
-        if (!alarmRepository.existsByChannelId(channel.id))
-            throw DiscordException("채널에 알람이 존재하지 않아요.")
 
-        val selectMenu = messageUtil.choiceAlarm(channel.id, user)
+        val alarms = alarmRepository.findByChannelId(channel.id)
+            .ifEmpty { throw DiscordException("채널에 알람이 존재하지 않아요.") }
+
+        val selectMenu = messageUtil.choiceAlarm(alarms, user)
 
         val response = QueryAlarmsResponse(
             content = "지울 알람을 선택해주세요.",

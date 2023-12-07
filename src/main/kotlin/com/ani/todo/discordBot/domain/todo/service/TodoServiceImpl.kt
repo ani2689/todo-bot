@@ -43,7 +43,10 @@ class TodoServiceImpl(
         val user = request.user
 
         val content = "${user.asMention}님의 할 일 목록"
-        val embed = messageUtil.todoList(user)
+
+        val todos = todoRepository.findByUserId(user.id)
+
+        val embed = messageUtil.todoList(todos, user)
         val button = listOf(
             Button.success("update:${user.id}", "새로고침"),
             Button.secondary("hasten:${user.id}", "재촉!")
@@ -81,10 +84,10 @@ class TodoServiceImpl(
     override fun choiceTodo(request: ChoiceTodoRequest): ChoiceTodoResponse {
         val user = request.user
 
-        if(!todoRepository.existsByUserIdAndStatus(user.id, TodoStatus.STAY))
-            throw DiscordException("완료할 할 일이 존재하지 않아요.")
+        val todos = todoRepository.findByUserIdAndStatus(user.id, TodoStatus.STAY)
+            .ifEmpty { throw DiscordException("완료할 할 일이 존재하지 않아요.") }
 
-        val selectMenu = messageUtil.choiceTodo(user)
+        val selectMenu = messageUtil.choiceTodo(todos, user)
 
         val response = ChoiceTodoResponse(
             content = "완료할 할 일을 선택해주세요.",
