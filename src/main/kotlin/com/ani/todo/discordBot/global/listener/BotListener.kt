@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component
 import com.ani.todo.discordBot.domain.alarm.service.AlarmService
 import com.ani.todo.discordBot.domain.daily.data.CreateDailyRequest
 import com.ani.todo.discordBot.domain.daily.service.DailyService
+import com.ani.todo.discordBot.domain.setting.service.SettingService
 import com.ani.todo.discordBot.domain.todo.data.*
 import com.ani.todo.discordBot.domain.todo.service.TodoService
 import com.ani.todo.discordBot.global.aop.discord.DiscordErrorCatch
@@ -21,15 +22,17 @@ import com.ani.todo.discordBot.global.error.DiscordException
 class BotListener (
     private val todoService: TodoService,
     private val alarmService: AlarmService,
-    private val dailyService: DailyService
+    private val dailyService: DailyService,
+    private val settingService: SettingService
 ) : ListenerAdapter() {
 
     @DiscordErrorCatch
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
         when (event.name) {
             "도움말" -> {
-                event.reply("명령어 목록")
-                    .setEmbeds(messageUtil.info().build())
+                val response = settingService.help()
+                event.reply(response.content)
+                    .setEmbeds(response.embed.build())
                     .queue()
             }
 
