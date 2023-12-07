@@ -34,7 +34,7 @@ class AlarmServiceImpl(
         if (minutes % 5 != 0)
             throw DiscordException("유효한 시간 양식이 아니에요.\n5분 단위로 입력해주세요.")
 
-        if (alarmRepository.findByTitleAndChannelId(title, channel.id) != null)
+        if (alarmRepository.existsByTitleAndChannelId(title, channel.id))
             throw DiscordException("채널에 이미 같은 제목의 알람이 존재해요.")
 
         val timeFormat = String.format("%02d:%02d", hours, minutes)
@@ -64,7 +64,7 @@ class AlarmServiceImpl(
 
         if (channel.type != ChannelType.TEXT)
             throw DiscordException("유효한 타입의 채널이 아니에요.")
-        if (alarmRepository.findByChannelId(channel.id).isNullOrEmpty())
+        if (!alarmRepository.existsByChannelId(channel.id))
             throw DiscordException("채널에 알람이 존재하지 않아요.")
 
         val selectMenu = messageUtil.choiceAlarm(channel.id, user)
@@ -88,7 +88,7 @@ class AlarmServiceImpl(
         alarmRepository.delete(alarm)
 
         val response = DeleteAlarmResponse(
-            content = "🗑 :: ${alarm.title} 알람이 삭제되었어요."
+            content = "$title 알람이 삭제되었어요."
         )
 
         return response

@@ -3,13 +3,11 @@ package com.ani.todo.discordBot.global.listener
 import com.ani.todo.discordBot.domain.alarm.data.CreateAlarmRequest
 import com.ani.todo.discordBot.domain.alarm.data.DeleteAlarmRequest
 import com.ani.todo.discordBot.domain.alarm.data.QueryAlarmsRequest
-import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.utils.messages.MessageEditData
-import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion
 import org.springframework.stereotype.Component
 import com.ani.todo.discordBot.domain.alarm.service.AlarmService
 import com.ani.todo.discordBot.domain.todo.data.*
@@ -125,9 +123,16 @@ class BotListener (
 
     @DiscordErrorCatch
     override fun onButtonInteraction(event: ButtonInteractionEvent) {
-        val keyword  = event.button.id!!.split(":")[0]
+        val buttonId = event.button.id ?: return
+
+        val value = buttonId.split(":")
+
+        if(value.size != 2)
+            return
+
+        val keyword  = value[0]
         val sender = event.user
-        val receiverId = event.button.id!!.split(":")[1]
+        val receiverId = value[1]
         val receiver = event.jda.retrieveUserById(receiverId).complete()
             ?: throw DiscordException("존재하지 않는 유저입니다.")
 
@@ -158,10 +163,11 @@ class BotListener (
     @DiscordErrorCatch
     override fun onStringSelectInteraction(event: StringSelectInteractionEvent) {
 
-        val value = event.selectedOptions.firstOrNull()!!.value.split(":")
-        val user = value[1]
+        val selectedOptions = event.selectedOptions.firstOrNull() ?: return
 
-        if(event.user.id != user || event.selectedOptions.firstOrNull() == null)
+        val value = selectedOptions.value.split(":")
+
+        if(event.user.id != value[1])
             return
 
         when(value[0]){
@@ -189,8 +195,4 @@ class BotListener (
             }
         }
     }
-
-    fun buildMessage(textChannel: MessageChannelUnion, message: String, util: () -> (EmbedBuilder)) =
-        textChannel.sendMessage(message).setEmbeds(util().build())
-
 }
