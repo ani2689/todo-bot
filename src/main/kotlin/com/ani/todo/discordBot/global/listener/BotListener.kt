@@ -10,17 +10,18 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.utils.messages.MessageEditData
 import org.springframework.stereotype.Component
 import com.ani.todo.discordBot.domain.alarm.service.AlarmService
+import com.ani.todo.discordBot.domain.daily.data.CreateDailyRequest
+import com.ani.todo.discordBot.domain.daily.service.DailyService
 import com.ani.todo.discordBot.domain.todo.data.*
 import com.ani.todo.discordBot.domain.todo.service.TodoService
 import com.ani.todo.discordBot.global.aop.discord.DiscordErrorCatch
 import com.ani.todo.discordBot.global.error.DiscordException
-import com.ani.todo.discordBot.global.util.MessageUtil
 
 @Component
 class BotListener (
-    private val messageUtil: MessageUtil,
     private val todoService: TodoService,
-    private val alarmService: AlarmService
+    private val alarmService: AlarmService,
+    private val dailyService: DailyService
 ) : ListenerAdapter() {
 
     @DiscordErrorCatch
@@ -73,20 +74,19 @@ class BotListener (
             }
 
             "데일리" -> {
-                val yesterdayTask = event.getOption("어제한일")!!.asString
-                val todayTask = event.getOption("오늘할일")!!.asString
-                val hardTask = event.getOption("어려웠던점")!!.asString
-                val url = when (event.getOption("공유")) {
-                    null -> ""
-                    else -> event.getOption("공유")!!.asString
-                }
-
-                event.reply(event.user.asMention + "님의 데일리" + "\n" + url)
-                    .setEmbeds(
-                        messageUtil.daily(yesterdayTask, todayTask, hardTask)
-                            .setThumbnail(event.user.effectiveAvatarUrl)
-                            .build()
+                val request = event.run {
+                    CreateDailyRequest(
+                        user = event.user,
+                        yesterdayTask = getOption("어제한일")!!.asString,
+                        todayTask = event.getOption("오늘할일")!!.asString,
+                        hardTask = event.getOption("어려웠던점")!!.asString,
+                        url = event.getOption("공유")?.asString ?: ""
                     )
+                }
+                val response = dailyService.createDaily(request)
+
+                event.reply(response.content)
+                    .setEmbeds(response.embed.build())
                     .queue()
 
             }
