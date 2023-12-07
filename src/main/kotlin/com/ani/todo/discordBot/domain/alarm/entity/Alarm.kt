@@ -20,7 +20,7 @@ data class Alarm (
 
     val content: String?,
 
-    val role: String?,
+    val roleId: String?,
 
     @ColumnDefault("'08:30'")
     val time: String

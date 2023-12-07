@@ -36,7 +36,7 @@ class Schedule (
                             null -> ""
                             else -> it.content
                         }
-                        if (it.role == null || jda.getRoleById(it.role!!) == null)
+                        if (it.roleId == null || jda.getRoleById(it.roleId) == null)
                             channel.sendMessage(
                                 "🔔 **" + it.title + "**" + "\n" +
                                         "\n" +
@@ -44,7 +44,7 @@ class Schedule (
                             ).queue()
                         else
                             channel.sendMessage(
-                                jda.getRoleById(it.role!!)!!.asMention + "\n" +
+                                jda.getRoleById(it.roleId)!!.asMention + "\n" +
                                         "🔔 **" + it.title + "**" + "\n" +
                                         "\n" +
                                         content
