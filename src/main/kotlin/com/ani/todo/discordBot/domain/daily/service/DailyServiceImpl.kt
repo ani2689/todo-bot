@@ -2,7 +2,7 @@ package com.ani.todo.discordBot.domain.daily.service
 
 import com.ani.todo.discordBot.domain.daily.data.CreateDailyRequest
 import com.ani.todo.discordBot.domain.daily.data.CreateDailyResponse
-import com.ani.todo.discordBot.global.util.MessageUtil
+import com.ani.todo.discordBot.common.util.MessageUtil
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
