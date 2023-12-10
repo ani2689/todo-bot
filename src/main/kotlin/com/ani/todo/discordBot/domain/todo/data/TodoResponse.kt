@@ -1,12 +1,12 @@
 package com.ani.todo.discordBot.domain.todo.data
 
 import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu
 
 data class CreateTodoResponse(
     val content: String,
+    val embed: EmbedBuilder
 )
 
 data class QueryTodosResponse(
@@ -24,5 +24,6 @@ data class ChoiceTodoResponse(
 )
 
 data class CheckTodoResponse(
-    val content: String
+    val content: String,
+    val embed: EmbedBuilder
 )

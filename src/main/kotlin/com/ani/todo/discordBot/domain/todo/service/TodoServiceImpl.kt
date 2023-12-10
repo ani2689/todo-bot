@@ -31,8 +31,14 @@ class TodoServiceImpl(
 
         todoRepository.save(todo)
 
+        val embed = messageUtil.simpleEmbed(
+            title = "📋 할 일 추가",
+            content = content
+        )
+
         val response = CreateTodoResponse(
-            content = "✍ :: $content"
+            content = "할 일을 성공적으로 추가했어요.",
+            embed = embed
         )
 
         return response
@@ -42,11 +48,13 @@ class TodoServiceImpl(
     override fun queryTodos(request: QueryTodosRequest): QueryTodosResponse {
         val user = request.user
 
-        val content = "${user.asMention}님의 할 일 목록"
-
         val todos = todoRepository.findByUserId(user.id)
 
-        val embed = messageUtil.todoList(todos, user)
+        val content = "${user.asMention}님의 할 일 목록"
+        val embed = messageUtil.todoList(
+            todos = todos,
+            user = user
+        )
         val button = listOf(
             Button.success("update:${user.id}", "새로고침"),
             Button.secondary("hasten:${user.id}", "재촉!")
@@ -67,11 +75,10 @@ class TodoServiceImpl(
         val senderMention = request.sender.asMention
         val receiverMention = request.receiver.asMention
 
-        val content = if(todoRepository.existsByUserIdAndStatus(receiverId, TodoStatus.STAY)){
+        val content = if(todoRepository.existsByUserIdAndStatus(receiverId, TodoStatus.STAY))
             "🙋‍♀️ :: $senderMention 님이 부릅니다.  ** 🎵 $receiverMention ? 다 울었으면 이제 할 일을 해요. 🎵 **"
-        }else{
+        else
             "🤷‍♀️ :: $senderMention 님이 부릅니다. ** 🎵 $receiverMention , 할 일 없어요? 🎵 **"
-        }
 
         val response = HastenTodosResponse(
             content = content
@@ -87,7 +94,10 @@ class TodoServiceImpl(
         val todos = todoRepository.findByUserIdAndStatus(user.id, TodoStatus.STAY)
             .ifEmpty { throw DiscordException("완료할 할 일이 존재하지 않아요.") }
 
-        val selectMenu = messageUtil.choiceTodo(todos, user)
+        val selectMenu = messageUtil.choiceTodo(
+            todos = todos,
+            user = user
+        )
 
         val response = ChoiceTodoResponse(
             content = "완료할 할 일을 선택해주세요.",
@@ -115,8 +125,14 @@ class TodoServiceImpl(
 
         todoRepository.save(checkTodo)
 
+        val embed = messageUtil.simpleEmbed(
+            title = "📋 할 일 완료",
+            content = checkTodo.content
+        )
+
         val response = CheckTodoResponse(
-            content = "📝 :: ${checkTodo.content} 완료!"
+            content = "할 일을 성공적으로 완료했어요.",
+            embed = embed,
         )
 
         return response

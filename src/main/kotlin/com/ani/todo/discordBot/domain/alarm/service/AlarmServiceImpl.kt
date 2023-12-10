@@ -49,8 +49,14 @@ class AlarmServiceImpl(
 
         alarmRepository.save(alarm)
 
+        val embed = messageUtil.simpleEmbed(
+            title = "⏰ 알람 추가",
+            content = title
+        ).setFooter("$hours 시 $minutes 분 울림")
+
         val response = CreateAlarmResponse(
-            content = "알람 설정이 완료되었어요. 매일 **$time** 에 **$title** 알람이 울릴 거예요!"
+            content = "알람이 성공적으로 추가되었어요.",
+            embed = embed
         )
 
         return response
@@ -60,7 +66,6 @@ class AlarmServiceImpl(
     override fun queryAlarms(queryAlarmsRequest: QueryAlarmsRequest): QueryAlarmsResponse {
         val channel = queryAlarmsRequest.channel
         val user = queryAlarmsRequest.user
-
 
         if (channel.type != ChannelType.TEXT)
             throw DiscordException("유효한 타입의 채널이 아니에요.")
@@ -88,8 +93,15 @@ class AlarmServiceImpl(
 
         alarmRepository.delete(alarm)
 
+        val content = "알람이 성공적으로 삭제되었어요."
+        val embed = messageUtil.simpleEmbed(
+            title = "⏰ 알람 삭제",
+            content = title
+        )
+
         val response = DeleteAlarmResponse(
-            content = "$title 알람이 삭제되었어요."
+            content = content,
+            embed = embed
         )
 
         return response

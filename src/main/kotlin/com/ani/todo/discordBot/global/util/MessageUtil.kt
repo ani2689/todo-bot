@@ -12,4 +12,5 @@ interface MessageUtil {
     fun choiceTodo(todos: List<Todo>, user: User): StringSelectMenu?
     fun choiceAlarm(alarms: List<Alarm>, user: User): StringSelectMenu?
     fun daily(yesterdayTask: String, todayTask: String, hardTask: String): EmbedBuilder
+    fun simpleEmbed(title: String, content: String): EmbedBuilder
 }

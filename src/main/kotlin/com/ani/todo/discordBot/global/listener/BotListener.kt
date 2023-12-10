@@ -31,11 +31,11 @@ class BotListener (
         when (event.name) {
             "도움말" -> {
                 val response = settingService.help()
+
                 event.reply(response.content)
                     .setEmbeds(response.embed.build())
                     .queue()
             }
-
             "할일" -> {
                 val request = event.run {
                     QueryTodosRequest(
@@ -49,7 +49,6 @@ class BotListener (
                     .addActionRow(response.button)
                     .queue()
             }
-
             "할일추가" -> {
                 val request = event.run {
                     CreateTodoRequest(
@@ -60,9 +59,9 @@ class BotListener (
                 val response = todoService.createTodo(request)
 
                 event.reply(response.content)
+                    .addEmbeds(response.embed.build())
                     .queue()
             }
-
             "할일완료" -> {
                 val request = event.run {
                     ChoiceTodoRequest(
@@ -75,7 +74,6 @@ class BotListener (
                     .addActionRow(response.selectMenu)
                     .queue()
             }
-
             "데일리" -> {
                 val request = event.run {
                     CreateDailyRequest(
@@ -93,7 +91,6 @@ class BotListener (
                     .queue()
 
             }
-
             "알람추가" -> {
                 val request = event.run {
                     CreateAlarmRequest(
@@ -105,9 +102,11 @@ class BotListener (
                     )
                 }
                 val response = alarmService.createAlarm(request)
-                event.reply(response.content).queue()
-            }
 
+                event.reply(response.content)
+                    .addEmbeds(response.embed.build())
+                    .queue()
+            }
             "알람삭제" -> {
                 val request = event.run {
                     QueryAlarmsRequest(
@@ -165,15 +164,16 @@ class BotListener (
 
     @DiscordErrorCatch
     override fun onStringSelectInteraction(event: StringSelectInteractionEvent) {
-
         val selectedOptions = event.selectedOptions.firstOrNull() ?: return
 
         val value = selectedOptions.value.split(":")
 
+        val keyword  = value[0]
+
         if(event.user.id != value[1])
             return
 
-        when(value[0]){
+        when(keyword){
             "complete" -> {
                 val request = CheckTodoRequest(
                     todoId = value[2].toLong(),
@@ -182,8 +182,13 @@ class BotListener (
 
                 event.message.editMessageComponents().queue()
 
-                MessageEditData.fromContent(response.content)
-                    .let { event.message.editMessage(it).queue() }
+                val content = MessageEditData.fromContent(response.content)
+                val embed = response.embed.build()
+
+                event.message.run {
+                    editMessageEmbeds(embed).queue()
+                    editMessage(content).queue()
+                }
             }
             "silence" -> {
                 val request = DeleteAlarmRequest(
@@ -191,10 +196,16 @@ class BotListener (
                     channelId = value[3]
                 )
                 val response = alarmService.deleteAlarm(request)
+
                 event.message.editMessageComponents().queue()
 
-                MessageEditData.fromContent(response.content)
-                    .let { event.message.editMessage(it).queue() }
+                val content = MessageEditData.fromContent(response.content)
+                val embed = response.embed.build()
+
+                event.message.run {
+                    editMessageEmbeds(embed).queue()
+                    editMessage(content).queue()
+                }
             }
         }
     }

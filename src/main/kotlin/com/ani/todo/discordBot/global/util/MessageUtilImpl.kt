@@ -86,4 +86,10 @@ class MessageUtilImpl : MessageUtil {
             .addField("오늘 할 일", todayTask, false)
             .addField("어려웠던 점", hardTask, false)
             .setTimestamp(Instant.now())
+
+    override fun simpleEmbed(title: String, content: String) =
+        EmbedBuilder()
+            .setTitle(title)
+            .setDescription(content)
+
 }
