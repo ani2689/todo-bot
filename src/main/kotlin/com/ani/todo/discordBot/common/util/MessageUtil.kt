@@ -1,4 +1,4 @@
-package com.ani.todo.discordBot.global.util
+package com.ani.todo.discordBot.common.util
 
 import com.ani.todo.discordBot.domain.alarm.entity.Alarm
 import com.ani.todo.discordBot.domain.todo.entity.Todo

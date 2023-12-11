@@ -2,10 +2,10 @@ package com.ani.todo.discordBot.domain.todo.service
 
 import com.ani.todo.discordBot.domain.todo.data.*
 import com.ani.todo.discordBot.domain.todo.entity.Todo
-import com.ani.todo.discordBot.domain.todo.entity.status.TodoStatus
+import com.ani.todo.discordBot.domain.todo.entity.enums.TodoStatus
 import com.ani.todo.discordBot.domain.todo.repository.TodoRepository
 import com.ani.todo.discordBot.global.error.DiscordException
-import com.ani.todo.discordBot.global.util.MessageUtil
+import com.ani.todo.discordBot.common.util.MessageUtil
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service

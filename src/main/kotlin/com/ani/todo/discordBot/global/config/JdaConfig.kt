@@ -1,6 +1,6 @@
 package com.ani.todo.discordBot.global.config
 
-import com.ani.todo.discordBot.global.listener.BotListener
+import com.ani.todo.discordBot.common.listener.BotListener
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.entities.Activity

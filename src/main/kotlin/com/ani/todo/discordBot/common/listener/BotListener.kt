@@ -1,4 +1,4 @@
-package com.ani.todo.discordBot.global.listener
+package com.ani.todo.discordBot.common.listener
 
 import com.ani.todo.discordBot.domain.alarm.data.CreateAlarmRequest
 import com.ani.todo.discordBot.domain.alarm.data.DeleteAlarmRequest
@@ -8,17 +8,17 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.utils.messages.MessageEditData
-import org.springframework.stereotype.Component
-import com.ani.todo.discordBot.domain.alarm.service.AlarmService
 import com.ani.todo.discordBot.domain.daily.data.CreateDailyRequest
 import com.ani.todo.discordBot.domain.daily.service.DailyService
 import com.ani.todo.discordBot.domain.setting.service.SettingService
 import com.ani.todo.discordBot.domain.todo.data.*
 import com.ani.todo.discordBot.domain.todo.service.TodoService
+import com.ani.todo.discordBot.common.annotation.DiscordListener
+import com.ani.todo.discordBot.domain.alarm.service.AlarmService
 import com.ani.todo.discordBot.global.aop.discord.DiscordErrorCatch
 import com.ani.todo.discordBot.global.error.DiscordException
 
-@Component
+@DiscordListener
 class BotListener (
     private val todoService: TodoService,
     private val alarmService: AlarmService,

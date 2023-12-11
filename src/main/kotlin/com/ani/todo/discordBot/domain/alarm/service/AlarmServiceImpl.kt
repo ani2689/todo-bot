@@ -4,7 +4,7 @@ import com.ani.todo.discordBot.domain.alarm.data.*
 import com.ani.todo.discordBot.domain.alarm.entity.Alarm
 import com.ani.todo.discordBot.domain.alarm.repository.AlarmRepository
 import com.ani.todo.discordBot.global.error.DiscordException
-import com.ani.todo.discordBot.global.util.MessageUtil
+import com.ani.todo.discordBot.common.util.MessageUtil
 import net.dv8tion.jda.api.entities.channel.ChannelType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

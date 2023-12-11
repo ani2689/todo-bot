@@ -1,13 +1,13 @@
 package com.ani.todo.discordBot.domain.alarm.schedule
 
 import com.ani.todo.discordBot.domain.alarm.repository.AlarmRepository
+import com.ani.todo.discordBot.common.annotation.Scheduler
 import net.dv8tion.jda.api.JDA
 import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.stereotype.Component
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-@Component
+@Scheduler
 class AlarmSchedule(
     private val alarmRepository: AlarmRepository,
     private val jda: JDA

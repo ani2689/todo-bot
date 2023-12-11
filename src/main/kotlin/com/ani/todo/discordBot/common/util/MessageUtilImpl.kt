@@ -1,7 +1,7 @@
-package com.ani.todo.discordBot.global.util
+package com.ani.todo.discordBot.common.util
 
 import com.ani.todo.discordBot.domain.alarm.entity.Alarm
-import com.ani.todo.discordBot.domain.todo.entity.status.TodoStatus
+import com.ani.todo.discordBot.domain.todo.entity.enums.TodoStatus
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu
 import org.springframework.stereotype.Component
@@ -40,10 +40,10 @@ class MessageUtilImpl : MessageUtil {
             else -> Color.WHITE
         }
 
-        val field = when(todos.isEmpty()) {
-            true ->  "작성된 할 일이 없어요."
-            false -> "$stayListString\n$doneListString"
-        }
+        val field = if(todos.isEmpty())
+            "작성된 할 일이 없어요."
+        else
+            "$stayListString\n$doneListString"
 
         val description = "해야 할 일: ${stayList.size}개"
 
@@ -55,7 +55,7 @@ class MessageUtilImpl : MessageUtil {
             .setTimestamp(Instant.now())
     }
 
-    override fun choiceTodo(todos: List<Todo>, user: User) : StringSelectMenu {
+    override fun choiceTodo(todos: List<Todo>, user: User): StringSelectMenu {
         val selectMenu = StringSelectMenu.create("todo")
             .setPlaceholder("할 일 선택")
             .setRequiredRange(1, 1)

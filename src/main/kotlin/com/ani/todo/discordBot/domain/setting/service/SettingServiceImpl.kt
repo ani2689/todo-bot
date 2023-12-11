@@ -1,7 +1,7 @@
 package com.ani.todo.discordBot.domain.setting.service
 
 import com.ani.todo.discordBot.domain.setting.data.HelpResponse
-import com.ani.todo.discordBot.global.util.MessageUtil
+import com.ani.todo.discordBot.common.util.MessageUtil
 import org.springframework.stereotype.Service
 
 @Service
